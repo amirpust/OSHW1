@@ -8,9 +8,13 @@ class JobsList {
     int maxId;
     vector<JobEntry> jobs;
     JobEntry* fg;
+    JobsList();
 
 public:
-    JobsList();
+    JobsList(const JobsList&) = delete;
+    JobsList& operator=(const JobsList&) = delete;
+    static JobsList& getInstance();
+
     ~JobsList() = default;
     void addJob(const ExternalCommand& command,pid_t pid, const string& path, bool onBg);
     void printJobsList();

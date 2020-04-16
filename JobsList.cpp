@@ -172,3 +172,8 @@ JobEntry &JobsList::getLastStoppedJob() {
     return (*lastStopped);
 }
 
+JobsList &JobsList::getInstance() {
+    static JobsList instance;
+    return instance;
+}
+
