@@ -4,9 +4,9 @@
 #include "Libs.h"
 #include "SmallShell.h"
 
-class Signals {
-
-};
+void ctrlZHandler(int sig_num);
+void ctrlCHandler(int sig_num);
+void alarmHandler(int sig_num);
 
 
 #endif //OSHW1_SIGNALS_H

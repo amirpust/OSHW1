@@ -9,14 +9,14 @@
 const std::string WHITESPACE = " \n\r\t\f\v";
 
 class SmallShell {
-    JobsList jobs;
+    JobsList& jobs;
     const string defaultName;
     std::string name;
     string currentDir;
     string previousDir;
     pid_t myPid;
     //TODO : check if pre = null works
-    SmallShell() : jobs(), defaultName("smash"), name(defaultName),previousDir(nullptr){
+    SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), name(defaultName),previousDir(nullptr){
         currentDir = get_current_dir_name();
         myPid = getpid();
     };
@@ -64,6 +64,7 @@ public:
     ~SmallShell() = default;
 
     void executeCommand(const char* cmd_line){
+        PRINT_START
          //hope it will work
         bool bg;
         string original(cmd_line);
@@ -71,6 +72,22 @@ public:
         string splitCmd[COMMAND_MAX_ARGS];
         int size = 0;
         cmdDecryptor(original,&cmdStr,splitCmd,&size,&bg);
+
+        Command* cmd = createCommand(original, cmdStr, splitCmd, size);
+
+        if (cmd.getType == builtIn){
+            cmd->execute();
+        }else{
+            pid_t childPid = fork();
+            if(childPid == 0){ //Child
+                cmd->execute();
+                exit(-1);
+            }else{
+                jobs.addJob((*cmd),childPid, "./", bg);
+
+            }
+        }
+        PRINT_END;
     }
 
     Command* createCommand(string& original,string& cmdLine,string* splitCmd,
@@ -109,8 +126,9 @@ public:
 */
         return new ExternalCommand(cmdLine,original,splitCmd,size);
     }
-
-
+    const string &getName() const {
+        return name;
+    }
 
 };
 

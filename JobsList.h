@@ -23,6 +23,7 @@ public:
     void sendSigById(int sig, int jobId = 0);
     void bringFG(int jobId);
     void resumeOnBG(int jobId = 0);
+    pid_t fgPid();
 
 private:
 

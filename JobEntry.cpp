@@ -98,4 +98,7 @@ void JobEntry::killCmd() {
     updateStatus();
 }
 
+JobEntry::JobEntry(const JobEntry &toCopy) : cmd(toCopy.cmd) , status(toCopy.status), startTime(toCopy.startTime), stopTime(toCopy.stopTime),
+                                             jobId(toCopy.jobId), pid(toCopy.pid), path(toCopy.path){}
+
 

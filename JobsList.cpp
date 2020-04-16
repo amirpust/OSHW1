@@ -177,3 +177,9 @@ JobsList &JobsList::getInstance() {
     return instance;
 }
 
+pid_t JobsList::fgPid() {
+    if(!fg)
+        return -1;
+    return fg->getPid();
+}
+
