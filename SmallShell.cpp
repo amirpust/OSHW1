@@ -130,7 +130,7 @@ const string &SmallShell::getPreviousDir() const {
 void SmallShell::cd(const string &str) {
     if(str == "-"){
         chdir(previousDir.c_str());
-        string temp = previousDir;
+        string temp = currentDir;
         currentDir = previousDir;
         previousDir = temp;
         PRINT_PARAM(previousDir);

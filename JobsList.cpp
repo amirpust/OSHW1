@@ -55,6 +55,7 @@ void JobsList::sendSigById(int sig, int jobId) {
         job = &getJobById(jobId);
 
 
+
     if(sig == SIGKILL){
         job->killCmd();
     }else if (sig == SIGSTOP){
@@ -91,8 +92,6 @@ void JobsList::resumeOnBG(int jobId) {
 }
 
 void JobsList::update() {
-    PRINT_START;
-
     runFG();
     removeFinishedJobs();
 
@@ -100,7 +99,6 @@ void JobsList::update() {
         maxId = 0;
     else
         maxId = jobs.back().getJobId();
-    PRINT_END;
 }
 
 void JobsList::runFG() {
@@ -115,7 +113,6 @@ void JobsList::runFG() {
 }
 
 void JobsList::removeFinishedJobs() {
-    PRINT_START;
     if(jobs.empty())
         return;
 
@@ -131,7 +128,6 @@ void JobsList::removeFinishedJobs() {
     for(const JobEntry& i:temp)
         jobs.push_back(i);
 
-    PRINT_END;
 }
 
 void JobsList::printKilledCommand(JobEntry &job) {
@@ -147,7 +143,6 @@ void JobsList::killJob(JobEntry &job, bool toPrint) {
 
 JobEntry &JobsList::getJobById(int jobId) {
     update();
-
     for (JobEntry& i : jobs)
         if(i.getJobId() == jobId)
             return i;

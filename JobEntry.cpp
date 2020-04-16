@@ -8,9 +8,6 @@ JobEntry::JobEntry(const ExternalCommand& _cmd, int _jobId, pid_t _p, const stri
         cmd(ExternalCommand(_cmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), path(string(_path)){}
 
 void JobEntry::updateStatus() {
-    PRINT_START_PARAM(cmd.print());
-    PRINT_PARAM(pid);
-
     if(status == END)
         return;
 
@@ -35,8 +32,6 @@ void JobEntry::updateStatus() {
             status = RUN;
         }
     }
-
-    PRINT_END;
 }
 
 cmdStatus JobEntry::getStatus() const {
