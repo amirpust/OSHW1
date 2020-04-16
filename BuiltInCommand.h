@@ -1,12 +1,11 @@
-//
-// Created by Amir on 16/04/2020.
-//
-
 #ifndef OSHW1_BUILTINCOMMAND_H
 #define OSHW1_BUILTINCOMMAND_H
 
+#include "Libs.h"
+#include "Command.h"
+#include "JobList.h"
 
-class BuiltInCommand {
+class BuiltInCommand : public Command{
 
 };
 

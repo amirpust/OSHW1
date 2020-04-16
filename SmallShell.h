@@ -1,10 +1,9 @@
-//
-// Created by Amir on 16/04/2020.
-//
-
 #ifndef OSHW1_SMALLSHELL_H
 #define OSHW1_SMALLSHELL_H
 
+#include "Libs.h"
+#include "JobList.h"
+#include "BuiltInCommand.h"
 
 class SmallShell {
 
