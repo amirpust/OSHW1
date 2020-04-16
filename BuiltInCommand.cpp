@@ -64,7 +64,7 @@ KillCommand::KillCommand(string &decrypted, string &originalCommandLine, string 
     }
 
     sig *= -1;
-    if (sig < 0 || sig > MAX_SIG) // TODO :check if max sig is correct
+    if (sig < 0 || sig > MAX_SIG)
         throw invalidArgs(splitLine[0].c_str());
 }
 

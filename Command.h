@@ -7,7 +7,7 @@
 #define COMMAND_ARGS_MAX_LENGTH (200)
 #define COMMAND_MAX_ARGS (20)
 #define HISTORY_MAX_RECORDS (50)
-typedef enum {builtIn, external, pipeCmd, redirection} cmdType;
+typedef enum {builtIn, external, copyCmd} cmdType;
 typedef enum{override, append, noRedirect} redirectionType;
 typedef  enum{pipeRegular,pipeStderr,noPipe}pipeType;
 
