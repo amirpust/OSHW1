@@ -182,4 +182,3 @@ pid_t JobsList::fgPid() {
         return -1;
     return fg->getPid();
 }
-
