@@ -52,9 +52,10 @@ void JobsCommand::execute() {
 
 KillCommand::KillCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
         BuiltInCommand(decrypted,originalCommandLine,args,size){
+    if(size != 2)
+        throw invalidArgs(splitLine[0].c_str());
     sig = stoi(splitLine[1],nullptr);
     sig *= -1;
-
     jobId = stoi(splitLine[2], nullptr);
 }
 
