@@ -54,6 +54,7 @@ KillCommand::KillCommand(string &decrypted, string &originalCommandLine, string 
         BuiltInCommand(decrypted,originalCommandLine,args,size){
     sig = stoi(splitLine[1],nullptr);
     sig *= -1;
+    PRINT_PARAM(sig);
     jobId = stoi(splitLine[1], nullptr);
 }
 

@@ -28,16 +28,16 @@ int parseCommand(const string& cmd,string* splitCmd){
 }
 
 int main() {
-    string s = "how are u today?";
+    string s = "chprompt";
 
     string arr[100];
     int i = 0;
-    cout << isBackground(s) << endl;
+   // cout << isBackground(s) << endl;
+    cout << s <<endl;
     int si = parseCommand(s,arr);
     while(i < si){
         cout << arr[++i] << endl;
     }
-    removeBackgroundSign(s);
-    cout <<s <<endl;
+    //removeBackgroundSign(s);
     return 0;
 }

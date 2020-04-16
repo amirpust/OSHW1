@@ -133,6 +133,7 @@ void SmallShell::cd(const string &str) {
         string temp = previousDir;
         currentDir = previousDir;
         previousDir = temp;
+        PRINT_PARAM(previousDir);
     }else{
         previousDir = currentDir;
         chdir(str.c_str());
