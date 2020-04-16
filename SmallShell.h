@@ -64,14 +64,53 @@ public:
     ~SmallShell() = default;
 
     void executeCommand(const char* cmd_line){
+         //hope it will work
         bool bg;
         string original(cmd_line);
         string cmdStr;
         string splitCmd[COMMAND_MAX_ARGS];
         int size = 0;
-        cmdDecryptor(original,&cmdStr,splitCmd,&size,&bg); //hope it will work
-
+        cmdDecryptor(original,&cmdStr,splitCmd,&size,&bg);
     }
+
+    Command* createCommand(string& original,string& cmdLine,string* splitCmd,
+            int size){
+        const std::string commands [] = {
+                "chprompt", "showpid", "pwd", "cd", "jobs", "kill", "fg",
+                "bg", "quit"
+        };
+     /*
+        if (str.find(commands[0]) == 0)
+            return new chpromptCommand(cmd_line,og_line);
+
+        if (str.find(commands[1]) == 0)
+            return new showpidCommand(cmd_line,og_line);
+
+        if (str.find(commands[2]) == 0)
+            return new pwdCommand(cmd_line,og_line);
+
+        if (str.find(commands[3]) == 0)
+            return new cdCommand(cmd_line,og_line);
+        */
+        if (original.find(commands[4]) == 0)
+            return new JobsCommand(cmdLine,original,splitCmd,size);
+
+ /*       if (str.find(commands[5]) == 0)
+            return new killCommand(cmd_line,og_line);
+
+        if (str.find(commands[6]) == 0)
+            return new fgCommand(cmd_line,og_line);
+
+        if (str.find(commands[7]) == 0)
+            return new bgCommand(cmd_line,og_line);
+
+        if (str.find(commands[8]) == 0)
+            return new quitCommand(cmd_line,og_line);
+*/
+        return new ExternalCommand(cmdLine,original,splitCmd,size);
+    }
+
+
 
 };
 

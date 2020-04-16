@@ -4,6 +4,7 @@
 #include "Libs.h"
 #include "Command.h"
 #include "JobsList.h"
+#include "SmallShell.h"
 
 class BuiltInCommand : public Command{
 public:
@@ -19,7 +20,7 @@ public:
     BuiltInCommand(decrypted,originalCommandLine,args,size){};
 
     void execute() override {
-        SmallShell::getInstance().getJobs().printJobsList(); //TODO: add the try catch policy
+        SmallShell::getInstance() //TODO: add the try catch policy
     }
 };
 
