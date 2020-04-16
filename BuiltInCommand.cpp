@@ -1,6 +1,7 @@
 #include "BuiltInCommand.h"
 #include "SmallShell.h"
 
+#define MAX_SIG 31
 ChpromptCommand::ChpromptCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
 BuiltInCommand(decrypted,originalCommandLine,args,size){}
 
@@ -63,7 +64,7 @@ KillCommand::KillCommand(string &decrypted, string &originalCommandLine, string 
     }
 
     sig *= -1;
-    if (sig < 0)
+    if (sig < 0 || sig > MAX_SIG) // TODO :check if max sig is correct
         throw invalidArgs(splitLine[0].c_str());
 }
 
