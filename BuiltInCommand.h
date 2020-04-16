@@ -20,7 +20,7 @@ public:
     BuiltInCommand(decrypted,originalCommandLine,args,size){};
 
     void execute() override {
-        SmallShell::getInstance() //TODO: add the try catch policy
+        JobsList::getInstance().printJobsList(); //TODO: add the try catch policy
     }
 };
 
