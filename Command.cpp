@@ -5,9 +5,10 @@
 #include "Command.h"
 
 Command::Command(string& cmdLine,string &originalCommandLine, string *args, int size, cmdType type)
-        :decryptedCmd(cmdLine) ,originalCommandLine(originalCommandLine), size(size), type(type) {
+        :decryptedCmd(string(cmdLine)) ,originalCommandLine(string(originalCommandLine))
+        , size(size), type(type) {
     for (int i = 0; i < size; ++i) {
-        splitLine[i] = args[i];
+        splitLine[i] = string(args[i]);
     }
 }
 
