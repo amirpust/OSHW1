@@ -9,7 +9,6 @@ SmallShell &SmallShell::getInstance() {
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
-    PRINT_START;
     //hope it will work
     bool bg;
     string original(cmd_line);
@@ -31,11 +30,9 @@ void SmallShell::executeCommand(const char *cmd_line) {
             externalCommand.execute();
             exit(-1);
         }else {
-            jobs.addJob((*(dynamic_cast<ExternalCommand *>(cmd))), childPid,
-                        "./", bg);
+            jobs.addJob(externalCommand, childPid, "./", bg);
         }
     }
-    PRINT_END;
 }
 
 void SmallShell::setName(const string &newName) {
@@ -109,7 +106,7 @@ int SmallShell::parseCommand(const string &cmd, string *splitCmd) {
     istringstream iss(cmd);
     string str;
     while(getline(iss,str,' ')){
-        splitCmd[++i] = string(str);
+        splitCmd[i++] = string(str);
     }
     return i;
 }
