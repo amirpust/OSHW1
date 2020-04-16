@@ -4,7 +4,6 @@
 #include "Libs.h"
 #include "Command.h"
 #include "JobsList.h"
-#include "SmallShell.h"
 
 class BuiltInCommand : public Command{
 public:

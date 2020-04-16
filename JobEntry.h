@@ -20,7 +20,7 @@ class JobEntry {
 public:
 
     JobEntry(const ExternalCommand& _cmd, int _jobId, pid_t _p, const string& _path);
-    JobEntry(const JobEntry& toCopy);;
+    JobEntry(const JobEntry& toCopy);
     void updateStatus();
     cmdStatus getStatus() const;
     int getJobId() const;

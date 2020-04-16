@@ -6,6 +6,7 @@
 #include "JobsList.h"
 #include "BuiltInCommand.h"
 
+
 const std::string WHITESPACE = " \n\r\t\f\v";
 
 class SmallShell {
@@ -16,7 +17,7 @@ class SmallShell {
     string previousDir;
     pid_t myPid;
     //TODO : check if pre = null works
-    SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), name(defaultName),previousDir(nullptr){
+    SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), name(defaultName),previousDir(""){
         currentDir = get_current_dir_name();
         myPid = getpid();
     };
@@ -75,23 +76,22 @@ public:
 
         Command* cmd = createCommand(original, cmdStr, splitCmd, size);
 
-        if (cmd.getType() == builtIn){
+        if (cmd->getType() == builtIn){
             cmd->execute();
         }else{
             pid_t childPid = fork();
             if(childPid == 0){ //Child
+                setpgrp();
                 cmd->execute();
                 exit(-1);
             }else{
-                jobs.addJob((*cmd),childPid, "./", bg);
-
+                jobs.addJob((*(dynamic_cast<ExternalCommand*>(cmd))),childPid,"./",bg);
             }
         }
         PRINT_END;
     }
 
-    Command* createCommand(string& original,string& cmdLine,string* splitCmd,
-            int size){
+    Command* createCommand(string& original,string& cmdLine,string* splitCmd, int size){
         const std::string commands [] = {
                 "chprompt", "showpid", "pwd", "cd", "jobs", "kill", "fg",
                 "bg", "quit"

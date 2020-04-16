@@ -3,7 +3,7 @@
 #include "Signals.h"
 
 int main(int argc, char* argv[]) {
-
+    PRINT_START;
     if(signal(SIGTSTP , ctrlZHandler)==SIG_ERR) {
         perror("smash error: failed to set ctrl-Z handler");
     }
@@ -29,5 +29,6 @@ int main(int argc, char* argv[]) {
             std::cout << "smash" << e.what() << endl;
         }
     }
+    PRINT_END;
     return 0;
 }

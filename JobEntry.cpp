@@ -5,10 +5,10 @@
 #include "JobEntry.h"
 
 JobEntry::JobEntry(const ExternalCommand& _cmd, int _jobId, pid_t _p, const string& _path) :
-        cmd(ExternalCommand(_cmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), path(string(_path){}
+        cmd(ExternalCommand(_cmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), path(string(_path)){}
 
 void JobEntry::updateStatus() {
-    PRINT_START_PARAM(cmd->print());
+    PRINT_START_PARAM(cmd.print());
     PRINT_PARAM(pid);
 
     if(status == END)
@@ -16,10 +16,6 @@ void JobEntry::updateStatus() {
 
     int newStatus = 0;
     pid_t p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
-
-    /*cout << "Checking  " << p << endl;
-    cout << "Checking status of " << pid << endl;
-    cout << "newStatus: " << newStatus << endl;*/
 
     if( p != 0){
         if(WIFSTOPPED(newStatus)){
