@@ -15,7 +15,7 @@ ShowpidCommand::ShowpidCommand(string &decrypted, string &originalCommandLine, s
         BuiltInCommand(decrypted,originalCommandLine,args,size){}
 
 void ShowpidCommand::execute() {
-    cout << getpid() << endl;
+    cout << "smash pid is "<< SmallShell::getInstance().getMyPid() << endl;
 }
 
 PwdCommand::PwdCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
