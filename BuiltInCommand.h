@@ -86,7 +86,7 @@ public:
 
 
 
-class CopyCommand : public  Command{
+class CopyCommand : public Command{
     string oldFile;
     string newFile;
     int readFD;
@@ -96,7 +96,7 @@ class CopyCommand : public  Command{
 public:
 
     CopyCommand(string& decrypted,string &originalCommandLine, string *args, int size)
-    :Command(decrypted, originalCommandLine, args, size, copyCmd){
+    : Command(decrypted, originalCommandLine, args, size, copyCmd){
         //TODO: check arguments
         oldFile = splitLine[1];
         newFile = splitLine[2];
@@ -105,8 +105,7 @@ public:
     void execute()override {
         prepare();
         char buf[1];
-        while(read(readFD,buf,1) && write(writeFD,buf,1)){
-        }
+        while(read(readFD,buf,1) > 0 && write(writeFD,buf,1) > 0){}
     }
 
 private:
