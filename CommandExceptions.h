@@ -23,7 +23,6 @@ public:
 
 };
 
-
 class invalidArgs : public commandException{
 
 public:
@@ -50,8 +49,6 @@ protected:
     }
 };
 
-
-
 class jobDoesntExist : public commandException{
     int jobId;
 
@@ -59,7 +56,7 @@ public:
 
     jobDoesntExist(const char* _cmd, int _jobId): commandException(_cmd), jobId(_jobId){};
     string print() const override {
-        return  " error: " + string(cmd) + ": " + std::to_string(jobId) + " does not exist";
+        return  " error: " + string(cmd) + ": job-id " + std::to_string(jobId) + " does not exist";
     }
 };
 

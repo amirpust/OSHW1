@@ -72,6 +72,8 @@ void KillCommand::execute() {
         JobsList::getInstance().sendSigById(sig,jobId);
     }catch(JobsList::notExist& e){
         throw jobDoesntExist(splitLine[0].c_str(),jobId);
+    }catch(JobsList::emptyList& e){
+        throw jobDoesntExist(splitLine[0].c_str(),jobId);
     }
 }
 
@@ -80,7 +82,14 @@ FgCommand::FgCommand(string &decrypted, string &originalCommandLine, string *arg
     if(size != 2){
         throw invalidArgs(splitLine[0].c_str());
     }
-    jobId = stoi(args[1], nullptr);
+    try {
+        jobId = stoi(args[1], nullptr);
+    }catch(exception& e){
+        throw invalidArgs(splitLine[0].c_str());
+    }
+    if (jobId <= 0){
+        throw invalidArgs(splitLine[0].c_str());
+    }
 }
 
 void FgCommand::execute() {
@@ -97,8 +106,16 @@ BgCommand::BgCommand(string &decrypted, string &originalCommandLine, string *arg
         BuiltInCommand(decrypted,originalCommandLine,args,size){
     if(size == 1)
         jobId = 0;
-    else
-        jobId = stoi(args[1], nullptr);
+    else{
+        try {
+            jobId = stoi(args[1], nullptr);
+        }catch(exception& e){
+            throw invalidArgs(splitLine[0].c_str());
+        }
+        if (jobId < 0){
+            throw invalidArgs(splitLine[0].c_str());
+        }
+    }
 }
 
 void BgCommand::execute() {
