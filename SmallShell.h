@@ -2,7 +2,7 @@
 #define OSHW1_SMALLSHELL_H
 
 #include "Libs.h"
-#include "JobList.h"
+#include "JobsList.h"
 #include "BuiltInCommand.h"
 
 class SmallShell {

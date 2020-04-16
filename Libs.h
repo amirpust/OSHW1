@@ -11,6 +11,11 @@
 #include <stack>
 #include <signal.h>
 
+#include <exception>
+#include <ctime>
+#include <cassert>
+#include "Debugger.h"
+
 using namespace std;
 
 #endif //OSHW1_LIBS_H
