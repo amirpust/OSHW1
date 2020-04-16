@@ -4,6 +4,7 @@
 #include "Libs.h"
 #include "Command.h"
 #include "JobsList.h"
+#include "SmallShell.h"
 
 
 class BuiltInCommand : public Command{
@@ -36,24 +37,49 @@ public:
 
 class CdCommand : public BuiltInCommand{
 public:
-    CdCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+    CdCommand(string& decrypted,string &originalCommandLine, string *args, int size);
 
     void execute() override;
 };
 
 class JobsCommand: public BuiltInCommand{
 public:
-    JobsCommand(string& decrypted,string &originalCommandLine, string *args, int size):
-    BuiltInCommand(decrypted,originalCommandLine,args,size){};
+    JobsCommand(string& decrypted,string &originalCommandLine, string *args, int size);
 
-    void execute() override {
-        try{
-            JobsList::getInstance().printJobsList(); //TODO: add the try catch policy
-        }catch (JobsList::emptyList& e){
-            throw emptyList(splitLine[0].c_str());
-        }
-    }
+    void execute() override;
 };
 
+class KillCommand : public BuiltInCommand{
+    int sig;
+    int jobId;
+public:
+    KillCommand(string& decrypted,string &originalCommandLine, string *args, int size);
+
+    void execute() override;
+};
+
+
+class FgCommand : public BuiltInCommand{
+    int jobId;
+public:
+    FgCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+    void execute() override;
+
+};
+
+class BgCommand : public  BuiltInCommand{
+    int jobId;
+public:
+    BgCommand(string& decrypted,string &originalCommandLine, string *args, int size);
+
+    void execute() override;
+};
+
+
+class QuitCommand : public BuiltInCommand{
+public:
+    QuitCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+    void execute() override;
+};
 
 #endif //OSHW1_BUILTINCOMMAND_H
