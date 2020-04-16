@@ -26,21 +26,8 @@ public:
     void setName(const string& newName);
     const string &getName() const;
     const string &getPreviousDir() const;
-    void cd(const string& str){
-        if(str == "-"){
-            chdir(previousDir.c_str());
-            string temp = previousDir;
-            currentDir = previousDir;
-            previousDir = temp;
-        }else{
-            previousDir = currentDir;
-            chdir(str.c_str());
-            char* temp = get_current_dir_name();
-            currentDir = string(temp);
-            free(temp);
-        }
-        //TODO : check if success
-    }
+    void cd(const string& str);
+    pid_t getMyPid() const;
 
 private:
     SmallShell();

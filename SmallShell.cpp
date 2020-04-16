@@ -52,34 +52,34 @@ SmallShell::createCommand(string &original, string &cmdLine, string *splitCmd,
             "chprompt", "showpid", "pwd", "cd", "jobs", "kill", "fg",
             "bg", "quit"
     };
-    /*
-       if (str.find(commands[0]) == 0)
-           return new chpromptCommand(cmd_line,og_line);
 
-       if (str.find(commands[1]) == 0)
-           return new showpidCommand(cmd_line,og_line);
+    if (original.find(commands[0]) == 0)
+        return new ChpromptCommand(cmdLine,original,splitCmd,size);
 
-       if (str.find(commands[2]) == 0)
-           return new pwdCommand(cmd_line,og_line);
+    if (original.find(commands[1]) == 0)
+        return new ShowpidCommand(cmdLine,original,splitCmd,size);
 
-       if (str.find(commands[3]) == 0)
-           return new cdCommand(cmd_line,og_line);
-       */
+    if (original.find(commands[2]) == 0)
+        return new PwdCommand(cmdLine,original,splitCmd,size);
+
+    if (original.find(commands[3]) == 0)
+        return new CdCommand(cmdLine,original,splitCmd,size);
+
     if (original.find(commands[4]) == 0)
         return new JobsCommand(cmdLine,original,splitCmd,size);
 
-    /*       if (str.find(commands[5]) == 0)
-               return new killCommand(cmd_line,og_line);
+    if (original.find(commands[5]) == 0)
+        return new KillCommand(cmdLine,original,splitCmd,size);
 
-           if (str.find(commands[6]) == 0)
-               return new fgCommand(cmd_line,og_line);
+    if (original.find(commands[6]) == 0)
+        return new FgCommand(cmdLine,original,splitCmd,size);
 
-           if (str.find(commands[7]) == 0)
-               return new bgCommand(cmd_line,og_line);
+    if (original.find(commands[7]) == 0)
+        return new BgCommand(cmdLine,original,splitCmd,size);
 
-           if (str.find(commands[8]) == 0)
-               return new quitCommand(cmd_line,og_line);
-   */
+    if (original.find(commands[8]) == 0)
+        return new QuitCommand(cmdLine,original,splitCmd,size);
+
     return new ExternalCommand(cmdLine,original,splitCmd,size);
 }
 
@@ -128,4 +128,24 @@ void SmallShell::removeBackgroundSign(string &cmd) {
 
 const string &SmallShell::getPreviousDir() const {
     return previousDir;
+}
+
+void SmallShell::cd(const string &str) {
+    if(str == "-"){
+        chdir(previousDir.c_str());
+        string temp = previousDir;
+        currentDir = previousDir;
+        previousDir = temp;
+    }else{
+        previousDir = currentDir;
+        chdir(str.c_str());
+        char* temp = get_current_dir_name();
+        currentDir = string(temp);
+        free(temp);
+    }
+    //TODO : check if success
+}
+
+pid_t SmallShell::getMyPid() const {
+    return myPid;
 }

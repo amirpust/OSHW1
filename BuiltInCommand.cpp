@@ -113,5 +113,5 @@ void QuitCommand::execute() {
              std::to_string(JobsList::getInstance().getSize()) << " jobs:" << endl;
         JobsList::getInstance().killAllJobs();
     }
-    kill(SmallShell::getInstance().getPid(), SIGKILL);
+    kill(SmallShell::getInstance().getMyPid(), SIGKILL);
 }
