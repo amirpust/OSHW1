@@ -4,8 +4,8 @@
 
 #include "JobEntry.h"
 
-JobEntry::JobEntry(const ExternalCommand &_cmd, int _jobId, pid_t p) :
-        cmd(ExternalCommand(_cmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(p){}
+JobEntry::JobEntry(const ExternalCommand& _cmd, int _jobId, pid_t _p, const string& _path) :
+        cmd(ExternalCommand(_cmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), path(string(_path){}
 
 void JobEntry::updateStatus() {
     PRINT_START_PARAM(cmd->print());
@@ -68,7 +68,7 @@ time_t JobEntry::getTime() const {
 const string JobEntry::print() const{
     if(status == STOP)
         return cmd.print();
-    return cmd.print() + " (stopped)";
+    return cmd.print();
 }
 
 void JobEntry::stopCmd() {
@@ -97,7 +97,5 @@ void JobEntry::killCmd() {
     kill(pid, SIGKILL);
     updateStatus();
 }
-
-
 
 

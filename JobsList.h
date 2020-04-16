@@ -6,23 +6,31 @@
 
 class JobsList {
     int maxId;
-    vector<JobEntry*> jobs;
+    vector<JobEntry> jobs;
     JobEntry* fg;
 
 public:
-    JobsList() : counter(0), maxId(0), jobs(), fg(NULL) {};
-    ~JobsList();
-    void addJob(Command* cmd,pid_t p, bool onBg);
+    JobsList();
+    ~JobsList() = default;
+    void addJob(const ExternalCommand& command,pid_t pid, const string& path, bool onBg);
+    void printJobsList();
+    void killAllJobs();
+    int getSize();
+    void sendSigById(int sig, int jobId = 0);
+    void bringFG(int jobId);
+    void resumeOnBG(int jobId = 0);
 
+private:
 
+    void update();
+    void runFG();
+    void removeFinishedJobs();
+    void printKilledCommand(JobEntry& job);
+    void killJob(JobEntry& job, bool toPrint = true);
+    JobEntry& getJobById(int jobId);
+    JobEntry& getLastStoppedJob();
 
-
-
-
-
-
-
-
+public:
 
     class notExist: public std::exception{};
     class emptyList: public std::exception{};
