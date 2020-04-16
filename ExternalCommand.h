@@ -7,10 +7,10 @@
 class ExternalCommand : public Command {
 public:
     ExternalCommand(string& decrypted,string &originalCommandLine, string *args, int size);
-   // copy C'tor
-    ExternalCommand(ExternalCommand& toCopy):
-    ExternalCommand(toCopy.decryptedCmd,toCopy.originalCommandLine,toCopy.splitLine
-            ,toCopy.size){};
+   // copy C'tor still having
+    ExternalCommand(const ExternalCommand& toCopy):
+            Command(toCopy.decryptedCmd,toCopy.originalCommandLine,toCopy.splitLine
+                    ,toCopy.size,external){};
     void execute() override;
     virtual  ~ExternalCommand() = default;
 };

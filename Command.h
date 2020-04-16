@@ -21,7 +21,7 @@ protected:
     cmdType type; // the type of the command
 public:
 
-    Command(string& cmdLine,string &originalCommandLine, string *args, int size, cmdType type);
+    Command(const string& cmdLine,const string &originalCommandLine,const string *args,int size,cmdType type);
 
     virtual ~Command() = default;
 
