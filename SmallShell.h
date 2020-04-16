@@ -64,7 +64,7 @@ public:
     ~SmallShell() = default;
 
     void executeCommand(const char* cmd_line){
-        PRINT_START
+        PRINT_START;
          //hope it will work
         bool bg;
         string original(cmd_line);
@@ -75,7 +75,7 @@ public:
 
         Command* cmd = createCommand(original, cmdStr, splitCmd, size);
 
-        if (cmd.getType == builtIn){
+        if (cmd.getType() == builtIn){
             cmd->execute();
         }else{
             pid_t childPid = fork();
