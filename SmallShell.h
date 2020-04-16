@@ -4,8 +4,6 @@
 #include <sstream>
 #include "Libs.h"
 #include "JobsList.h"
-#include "BuiltInCommand.h"
-
 
 const std::string WHITESPACE = " \n\r\t\f\v";
 

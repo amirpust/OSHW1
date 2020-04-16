@@ -1,5 +1,5 @@
-
 #include "SmallShell.h"
+#include "BuiltInCommand.h"
 
 
 SmallShell &SmallShell::getInstance() {
