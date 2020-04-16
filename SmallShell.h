@@ -33,6 +33,10 @@ private:
     int parseCommand(const string& cmd,string* splitCmd);
     bool isBackground(const string& cmd);
     void removeBackgroundSign(string& cmd);
+    const string &getPreviousDir() const;
+    void cd(const string& str){
+
+    }
 
 };
 

@@ -122,3 +122,7 @@ void SmallShell::removeBackgroundSign(string &cmd) {
 
     cmd[index] = '\0';
 }
+
+const string &SmallShell::getPreviousDir() const {
+    return previousDir;
+}
