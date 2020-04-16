@@ -29,7 +29,7 @@ int parseCommand(const string& cmd,string* splitCmd){
 
 int main() {
     string s = "chprompt";
-
+    cout << stoi(s) <<endl;
     string arr[100];
     int i = 0;
    // cout << isBackground(s) << endl;

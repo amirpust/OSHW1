@@ -54,9 +54,17 @@ KillCommand::KillCommand(string &decrypted, string &originalCommandLine, string 
         BuiltInCommand(decrypted,originalCommandLine,args,size){
     if(size != 3)
         throw invalidArgs(splitLine[0].c_str());
-    sig = stoi(splitLine[1],nullptr);
+    try {
+        sig = stoi(splitLine[1],nullptr);
+        jobId = stoi(splitLine[2], nullptr);
+
+    }catch(exception& e){
+        throw invalidArgs(splitLine[0].c_str());
+    }
+
     sig *= -1;
-    jobId = stoi(splitLine[2], nullptr);
+    if (sig < 0)
+        throw invalidArgs(splitLine[0].c_str());
 }
 
 void KillCommand::execute() {
