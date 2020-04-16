@@ -13,3 +13,7 @@ Command::Command(const string& cmdLine,const string &originalCommandLine,const s
     }
 }
 
+cmdType Command::getType() const {
+    return type;
+}
+

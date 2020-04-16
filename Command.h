@@ -30,6 +30,8 @@ public:
         return originalCommandLine;
     };
 
+    cmdType getType() const;
+
 };
 
 
