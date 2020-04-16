@@ -9,15 +9,34 @@ SmallShell &SmallShell::getInstance() {
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
-    //hope it will work
+    PRINT_START;
     bool bg;
     string original(cmd_line);
     string cmdStr;
     string splitCmd[COMMAND_MAX_ARGS];
+    string path;
     int size = 0;
+    pid_t pipePid = -1;
+
     cmdDecryptor(original,&cmdStr,splitCmd,&size,&bg);
 
+    PRINT_PARAM(bg);
+    int index = checkPipe(splitCmd, size, &pipePid);
+    if (index >= 0){
+        if(pipePid == 0){
+            size = index;
+        }else{
+            size -= (index + 1);
+            for(int i = 0; i < size; i++)
+                splitCmd[i] = splitCmd[i+index+1];
+        }
+    }
+
+
+    redirectionType io = identifyRedirection(splitCmd, size, &path);
+    prepareIO(io,path);
     Command* cmd = createCommand(original, cmdStr, splitCmd, size);
+
 
     if (cmd->getType() == builtIn){
         cmd->execute();
@@ -33,6 +52,10 @@ void SmallShell::executeCommand(const char *cmd_line) {
             jobs.addJob(externalCommand, childPid, "./", bg);
         }
     }
+
+
+    cleanUpIO(pipePid);
+    PRINT_END;
 }
 
 void SmallShell::setName(const string &newName) {
@@ -113,7 +136,9 @@ SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), 
     currentDir = string(temp);
     free(temp);
     myPid = getpid();
-
+    stdIn = dup(0);
+    stdOut = dup(1);
+    stdErr = dup(2);
 }
 
 void
@@ -140,14 +165,14 @@ bool SmallShell::isBackground(const string &cmd) {
 }
 
 void SmallShell::removeBackgroundSign(string &cmd) {
-    int index = cmd.find_last_not_of(WHITESPACE);
+    int index = static_cast<int>(cmd.find_last_not_of(WHITESPACE));
     if(cmd[index] != '&')
         return;
 
     cmd[index] = '\0';
 }
 
-redirectionType identifyRedirection(string* splitCmd, int size, string* path){
+redirectionType SmallShell::identifyRedirection(string* splitCmd, int size, string* path){
     assert (path != nullptr);
 
     for(int i = 0; i < size - 1; i++){
@@ -160,4 +185,29 @@ redirectionType identifyRedirection(string* splitCmd, int size, string* path){
         }
     }
     return noRedirect;
+}
+
+void SmallShell::prepareIO(redirectionType type, string path) {
+    if(type == noRedirect)
+        return;
+
+    close(1);
+    if(type == override){
+        open(path.c_str(),O_CREAT | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH);
+    }else{
+        open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH );
+    }
+}
+
+void SmallShell::cleanUpIO(pid_t pipePid) {
+    if(pipePid == 0)
+        exit(0);
+
+    close(0);
+    close(1);
+    close(2);
+
+    dup(stdIn);
+    dup(stdOut);
+    dup(stdErr);
 }
