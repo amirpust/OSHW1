@@ -143,6 +143,9 @@ void JobsList::killJob(JobEntry &job, bool toPrint) {
 
 JobEntry &JobsList::getJobById(int jobId) {
     update();
+    if(jobs.empty())
+        throw emptyList();
+
     for (JobEntry& i : jobs)
         if(i.getJobId() == jobId)
             return i;

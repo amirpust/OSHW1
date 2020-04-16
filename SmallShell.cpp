@@ -42,8 +42,32 @@ void SmallShell::setName(const string &newName) {
         name = newName;
 }
 
-Command *
-SmallShell::createCommand(string &original, string &cmdLine, string *splitCmd,
+const string &SmallShell::getPreviousDir() const {
+    return previousDir;
+}
+
+void SmallShell::cd(const string &str) {
+    if(str == "-"){
+        chdir(previousDir.c_str());
+        string temp = currentDir;
+        currentDir = previousDir;
+        previousDir = temp;
+        PRINT_PARAM(previousDir);
+    }else{
+        previousDir = currentDir;
+        chdir(str.c_str());
+        char* temp = get_current_dir_name();
+        currentDir = string(temp);
+        free(temp);
+    }
+    //TODO : check if success
+}
+
+pid_t SmallShell::getMyPid() const {
+    return myPid;
+}
+
+Command* SmallShell::createCommand(string &original, string &cmdLine, string *splitCmd,
                           int size) {
     const std::string commands [] = {
             "chprompt", "showpid", "pwd", "cd", "jobs", "kill", "fg",
@@ -123,27 +147,17 @@ void SmallShell::removeBackgroundSign(string &cmd) {
     cmd[index] = '\0';
 }
 
-const string &SmallShell::getPreviousDir() const {
-    return previousDir;
-}
+redirectionType identifyRedirection(string* splitCmd, int size, string* path){
+    assert (path != nullptr);
 
-void SmallShell::cd(const string &str) {
-    if(str == "-"){
-        chdir(previousDir.c_str());
-        string temp = currentDir;
-        currentDir = previousDir;
-        previousDir = temp;
-        PRINT_PARAM(previousDir);
-    }else{
-        previousDir = currentDir;
-        chdir(str.c_str());
-        char* temp = get_current_dir_name();
-        currentDir = string(temp);
-        free(temp);
+    for(int i = 0; i < size - 1; i++){
+        if(splitCmd[i] == ">"){
+            *path = splitCmd[i+1];
+            return override;
+        }else if(splitCmd[i] == ">>"){
+            *path = splitCmd[i+1];
+            return append;
+        }
     }
-    //TODO : check if success
-}
-
-pid_t SmallShell::getMyPid() const {
-    return myPid;
+    return noRedirect;
 }
