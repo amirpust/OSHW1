@@ -6,6 +6,11 @@
 
 class ExternalCommand : public Command {
 
+
+public:
+
+    ExternalCommand(string& decrypted,string &originalCommandLine, string *args, int size);
+    void execute() override;
 };
 
 
