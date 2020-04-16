@@ -11,6 +11,7 @@ public:
     ExternalCommand(const ExternalCommand& toCopy):
             Command(toCopy.decryptedCmd,toCopy.originalCommandLine,toCopy.splitLine
                     ,toCopy.size,external){};
+
     void execute() override;
     virtual  ~ExternalCommand() = default;
 };

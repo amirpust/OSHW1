@@ -1,6 +1,7 @@
 #ifndef OSHW1_COMMAND_H
 #define OSHW1_COMMAND_H
 #include "Libs.h"
+#include "CommandExceptions.h"
 
 
 #define COMMAND_ARGS_MAX_LENGTH (200)

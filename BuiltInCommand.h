@@ -5,6 +5,7 @@
 #include "Command.h"
 #include "JobsList.h"
 
+
 class BuiltInCommand : public Command{
 public:
     BuiltInCommand(string& decrypted,string &originalCommandLine, string *args, int size):
@@ -12,6 +13,33 @@ public:
     virtual ~BuiltInCommand() = default;
 };
 
+class ChpromptCommand: public BuiltInCommand{
+public:
+    ChpromptCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+
+    void execute() override;
+};
+
+class ShowpidCommand : public BuiltInCommand{
+public:
+    ShowpidCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+
+    void execute() override;
+};
+
+class PwdCommand : public BuiltInCommand{
+public:
+    PwdCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+
+    void execute() override;
+};
+
+class CdCommand : public BuiltInCommand{
+public:
+    CdCommand(string& decrypted,string &originalCommandLine, string *args, int size);;
+
+    void execute() override;
+};
 
 class JobsCommand: public BuiltInCommand{
 public:
@@ -19,7 +47,11 @@ public:
     BuiltInCommand(decrypted,originalCommandLine,args,size){};
 
     void execute() override {
-        JobsList::getInstance().printJobsList(); //TODO: add the try catch policy
+        try{
+            JobsList::getInstance().printJobsList(); //TODO: add the try catch policy
+        }catch (JobsList::emptyList& e){
+            throw emptyList(splitLine[0].c_str());
+        }
     }
 };
 

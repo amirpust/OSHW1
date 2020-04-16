@@ -25,18 +25,29 @@ public:
     Command* createCommand(string& original,string& cmdLine,string* splitCmd, int size);
     void setName(const string& newName);
     const string &getName() const;
+    const string &getPreviousDir() const;
+    void cd(const string& str){
+        if(str == "-"){
+            chdir(previousDir.c_str());
+            string temp = previousDir;
+            currentDir = previousDir;
+            previousDir = temp;
+        }else{
+            previousDir = currentDir;
+            chdir(str.c_str());
+            char* temp = get_current_dir_name();
+            currentDir = string(temp);
+            free(temp);
+        }
+        //TODO : check if success
+    }
 
 private:
-
     SmallShell();
     void cmdDecryptor(const string& original,string* cmd,string* splitCmd,int* size, bool* bg);
     int parseCommand(const string& cmd,string* splitCmd);
     bool isBackground(const string& cmd);
     void removeBackgroundSign(string& cmd);
-    const string &getPreviousDir() const;
-    void cd(const string& str){
-
-    }
 
 };
 

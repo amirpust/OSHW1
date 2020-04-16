@@ -88,8 +88,11 @@ const string &SmallShell::getName() const {
 }
 
 SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), name(defaultName),previousDir(""){
-    currentDir = get_current_dir_name();
+    char* temp = get_current_dir_name();
+    currentDir = string(temp);
+    free(temp);
     myPid = getpid();
+
 }
 
 void
