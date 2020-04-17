@@ -48,7 +48,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
         CopyCommand copyCommand(*dynamic_cast<CopyCommand*>(cmd));
         delete cmd;
         if (childPid == 0) { //Child
-            if (setpgrp() == SETPGRP_ERR);
+            if (setpgid(getpid(),getpid()) == SETPGRP_ERR)
                 throw setpgrpError();
             copyCommand.execute();
             exit(-1);
@@ -56,12 +56,14 @@ void SmallShell::executeCommand(const char *cmd_line) {
             jobs.addJob(copyCommand.print(), childPid, "./", bg);
         }
     }else {
-            pid_t childPid = fork();
+        pid_t childPid = fork();
             ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
             delete cmd;
             if (childPid == 0) { //Child
-                if (setpgrp() == SETPGRP_ERR);
+
+                if (setpgrp() == SETPGRP_ERR)
                     throw setpgrpError();
+
                 externalCommand.execute();
                 exit(-1);
             } else {

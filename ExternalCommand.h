@@ -36,10 +36,10 @@ private:
     void cleanUp(){
         if(readFD > -1)
             if(close(readFD) == CLOSE_ERR)
-                throw closeError{};
+                throw closeError();
         if(writeFD > -1)
             if(close(writeFD) == CLOSE_ERR)
-                throw closeError{};
+                throw closeError();
     }
 };
 #endif //OSHW1_EXTERNALCOMMAND_H

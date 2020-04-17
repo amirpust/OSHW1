@@ -13,6 +13,8 @@
 #include <exception>
 #include <ctime>
 #include <cassert>
+#include <errno.h>
+
 
 #include "Debugger.h"
 #include "SysCallException.h"
