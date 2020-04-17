@@ -124,7 +124,6 @@ void BgCommand::execute() {
         JobsList::getInstance().resumeOnBG(jobId);
     }catch (JobsList::notExist& e){
         throw jobDoesntExist(splitLine[0].c_str(),jobId);
-        //TODO : check what exception is being thrown empty or not exist
     }catch (JobsList::inBG& e){
         throw jobAlreadyBGRuning(splitLine[0].c_str(),jobId);
     }catch(JobsList::emptyList& e){
