@@ -10,10 +10,10 @@
 #include <iostream>
 #include <stack>
 #include <signal.h>
-
 #include <exception>
 #include <ctime>
 #include <cassert>
+
 #include "Debugger.h"
 #include "SysCallException.h"
 
