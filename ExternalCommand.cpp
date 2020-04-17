@@ -60,7 +60,7 @@ void CopyCommand::prepare() {
     readFD = open(oldFile.c_str(),O_RDONLY);
     writeFD = open(newFile.c_str(),O_CREAT | O_RDWR | O_TRUNC, S_IRWXU);
     if(readFD == READ_ERR || writeFD == WRITE_ERR){
-        throw openError();
+        throw openError(__FUNCTION__,__LINE__);
     }
 }
 

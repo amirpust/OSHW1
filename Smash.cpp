@@ -29,8 +29,9 @@ int main(int argc, char* argv[]) {
         }catch(commandException& e) {
             std::cout << "smash" << e.print() << endl;
         }catch (SysCallException& e){
-            std::cerr <<"smash error: " << e.print() << " failed" << endl;
+            std::cerr <<"smash error: " << e.printDebug() << " failed" << endl;
         }
+        smash.cleanUpIO(-1);
         if (getpid() != smash.getMyPid())
             exit(0);
     }

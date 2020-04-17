@@ -8,16 +8,29 @@
 using namespace std;
 
 class SysCallException : public exception{
+    const char* func;
+    const int line;
 public:
+    explicit SysCallException(const char* _func = "" , int _line = -1) : func(_func), line(_line){};
     virtual string print() = 0;
+    string printDebug(){
+        string temp = print();
+        temp += " | Func: ";
+        temp += func;
+        temp += " in line: ";
+        temp += to_string(line);
+        return temp;
+    }
 };
 
 #define OPEN_ERR -1
 class openError : public SysCallException{
 public:
+    explicit openError(const char* _func = "" , int _line = -1) : SysCallException(_func,_line){};
     string print() override {
         return "open";
     }
+
 };
 
 #define CLOSE_ERR -1

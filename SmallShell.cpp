@@ -10,7 +10,7 @@ SmallShell &SmallShell::getInstance() {
 
 void SmallShell::executeCommand(const char *cmd_line) {
     bool bg;
-    string original(cmd_line);
+    string original = cmdToString(cmd_line);
     string cmdStr;
     string splitCmd[COMMAND_MAX_ARGS];
     string path;
@@ -184,6 +184,8 @@ int SmallShell::parseCommand(const string &cmd, string *splitCmd) {
     istringstream iss(cmd);
     string str;
     while(getline(iss,str,' ')){
+        if(WHITESPACE.find(str) != string::npos)
+            continue;
         splitCmd[i++] = string(str);
     }
     return i;
@@ -216,17 +218,22 @@ redirectionType SmallShell::identifyRedirection(string* splitCmd, int size, stri
     return noRedirect;
 }
 
-void SmallShell::prepareIO(redirectionType type, string path) {
+void SmallShell::prepareIO(redirectionType type, const string& path) {
     if(type == noRedirect)
         return;
 
-    close(1);
+    PRINT_PARAM(path.size());
+    PRINT_PARAM(path);
+
+    if (close(1) == CLOSE_ERR)
+        throw closeError();
+
     if(type == override){
         if ( open(path.c_str(),O_CREAT | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH) == OPEN_ERR)
-            throw openError();
+            throw openError(__FUNCTION__,__LINE__);
     }else{
         if ( open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH ) == OPEN_ERR)
-            throw openError();
+            throw openError(__FUNCTION__,__LINE__);
     }
 }
 
@@ -239,19 +246,14 @@ void SmallShell::cleanUpIO(pid_t pipePid) {
             throw waitpidError();
     }
 
-    if (
-        close(0) == CLOSE_ERR ||
-        close(1) == CLOSE_ERR ||
-        close(2) == CLOSE_ERR
-            )
-        throw closeError();
 
-    if (
-        dup(stdIn) == DUP_ERR ||
-        dup(stdOut) == DUP_ERR ||
-        dup(stdErr) == DUP_ERR
-            )
-        throw dupError();
+    close(0);
+    close(1);
+    close(2);
+
+    dup(stdIn);
+    dup(stdOut);
+    dup(stdErr);
 }
 
 int SmallShell::checkPipe(string *split, int size, pid_t *enterPid) {
@@ -301,10 +303,7 @@ void SmallShell::splitPipe(pipeType type, pid_t *enterPid) {
 }
 
 SmallShell::~SmallShell() {
-    if (
-        close(stdIn) == CLOSE_ERR ||
-        close(stdOut) == CLOSE_ERR ||
-        close(stdErr)
-            )
-        throw closeError();
+    close(stdIn);
+    close(stdOut);
+    close(stdErr);
 }
