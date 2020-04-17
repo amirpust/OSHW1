@@ -145,5 +145,5 @@ void QuitCommand::execute() {
         JobsList::getInstance().killAllJobs();
     }
     if(kill(SmallShell::getInstance().getMyPid(), SIGKILL) == -1)
-        throw kill();
+        throw killError();
 }
