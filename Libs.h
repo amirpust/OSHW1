@@ -15,6 +15,7 @@
 #include <ctime>
 #include <cassert>
 #include "Debugger.h"
+#include "SysCallException.h"
 
 using namespace std;
 

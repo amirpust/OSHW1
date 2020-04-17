@@ -1,6 +1,7 @@
 #include "Libs.h"
 #include "SmallShell.h"
 #include "Signals.h"
+#include "SysCallException.h"
 
 int main(int argc, char* argv[]) {
     if(signal(SIGTSTP , ctrlZHandler)==SIG_ERR) {
@@ -26,6 +27,8 @@ int main(int argc, char* argv[]) {
             smash.executeCommand(cmd_line.c_str());
         }catch(commandException& e) {
             std::cout << "smash" << e.print() << endl;
+        }catch (SysCallException& e){
+            std::cerr <<"smash error: " << e.print() << " failed" << endl;
         }
     }
     return 0;
