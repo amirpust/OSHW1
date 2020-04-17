@@ -57,10 +57,10 @@ void SmallShell::executeCommand(const char *cmd_line) {
         }
     }else {
         pid_t childPid = fork();
-        if(childPid == FORK_ERR)
-            throw forkError();
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
         delete cmd;
+        if(childPid == FORK_ERR)
+            throw forkError();
         if (childPid == 0) { //Child
 
             if (setpgrp() == SETPGRP_ERR)
@@ -88,22 +88,22 @@ const string &SmallShell::getPreviousDir() const {
 
 void SmallShell::cd(const string &str) {
     if(str == "-"){
-        if(chdir(previousDir.c_str()) == -1)
+        if(chdir(previousDir.c_str()) == CHDIR_ERR)
             throw chdirError();
         string temp = currentDir;
         currentDir = previousDir;
         previousDir = temp;
     }else{
         previousDir = currentDir;
-        if(chdir(str.c_str()) == -1)
+        if(chdir(str.c_str()) == CHDIR_ERR)
             throw chdirError();
         char* temp = get_current_dir_name();
-        if(temp ==NULL)
+        if(temp == GET_CURR_DIR_ERR)
             throw getCurrentDirError();
+
         currentDir = string(temp);
         free(temp);
     }
-    //TODO : check if success
 }
 
 pid_t SmallShell::getMyPid() const {
@@ -155,12 +155,20 @@ const string &SmallShell::getName() const {
 
 SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), name(defaultName),previousDir(""){
     char* temp = get_current_dir_name();
+    if(temp == GET_CURR_DIR_ERR)
+        throw getCurrentDirError();
+
+
     currentDir = string(temp);
     free(temp);
+
     myPid = getpid();
     stdIn = dup(0);
     stdOut = dup(1);
     stdErr = dup(2);
+
+    if(stdIn == DUP_ERR || stdOut == DUP_ERR || stdErr == DUP_ERR)
+        throw dupError();
 }
 
 void SmallShell::cmdDecryptor(const string &original, string *cmd, string *splitCmd,
@@ -214,9 +222,11 @@ void SmallShell::prepareIO(redirectionType type, string path) {
 
     close(1);
     if(type == override){
-        open(path.c_str(),O_CREAT | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH);
+        if ( open(path.c_str(),O_CREAT | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH) == OPEN_ERR)
+            throw openError();
     }else{
-        open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH );
+        if ( open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH ) == OPEN_ERR)
+            throw openError();
     }
 }
 
@@ -225,16 +235,23 @@ void SmallShell::cleanUpIO(pid_t pipePid) {
         exit(0);
     if(pipePid > 0){
         int status;
-        waitpid(pipePid, &status, 0);
+        if ( waitpid(pipePid, &status, 0) == WAIT_PID_ERR)
+            throw waitpidError();
     }
 
-    close(0);
-    close(1);
-    close(2);
+    if (
+        close(0) == CLOSE_ERR ||
+        close(1) == CLOSE_ERR ||
+        close(2) == CLOSE_ERR
+            )
+        throw closeError();
 
-    dup(stdIn);
-    dup(stdOut);
-    dup(stdErr);
+    if (
+        dup(stdIn) == DUP_ERR ||
+        dup(stdOut) == DUP_ERR ||
+        dup(stdErr) == DUP_ERR
+            )
+        throw dupError();
 }
 
 int SmallShell::checkPipe(string *split, int size, pid_t *enterPid) {
@@ -254,29 +271,40 @@ int SmallShell::checkPipe(string *split, int size, pid_t *enterPid) {
 
 void SmallShell::splitPipe(pipeType type, pid_t *enterPid) {
     fileDescriptor pipeFD[2];
-    if (pipe(pipeFD) != 0)
-        exit(-1); //TODO: handle properly
+    if (pipe(pipeFD) == PIPE_ERR)
+       throw pipeError();
 
     (*enterPid) = fork();
 
+    if((*enterPid) == FORK_ERR)
+        throw forkError();
+
     if ((*enterPid) == 0){                               //Enter (write to pipe)
         if(type == pipeRegular){
-            close(1);
+            if (close(1) == CLOSE_ERR)
+                throw closeError();
         }else{
-            close(2);
+            if (close(2) == CLOSE_ERR)
+                throw closeError();
         }
-        dup(pipeFD[1]);
+        if ( dup(pipeFD[1]) == DUP_ERR)
+            throw dupError();
 
 
 
     }else{                                              //Exit (read from pipe)
-        close(0);
-        dup(pipeFD[0]);
+        if( close(0) == CLOSE_ERR)
+            throw closeError();
+        if( dup(pipeFD[0]) == DUP_ERR)
+            throw dupError();
     }
 }
 
 SmallShell::~SmallShell() {
-    close(stdIn);
-    close(stdOut);
-    close(stdErr);
+    if (
+        close(stdIn) == CLOSE_ERR ||
+        close(stdOut) == CLOSE_ERR ||
+        close(stdErr)
+            )
+        throw closeError();
 }
