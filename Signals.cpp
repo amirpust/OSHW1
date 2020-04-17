@@ -5,7 +5,8 @@ using namespace std;
 void ctrlZHandler(int sig_num) {
     cout << "smash: got ctrl-Z" << endl;
     JobsList::getInstance().sendSigById(SIGSTOP);
-    cout <<  JobsList::getInstance().fgPid() << endl;
+    cout <<  "smash: process " << JobsList::getInstance().fgPid() <<
+    " was stopped"<< endl;
 }
 
 void ctrlCHandler(int sig_num) {
