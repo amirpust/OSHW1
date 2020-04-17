@@ -88,4 +88,19 @@ public:
         return "get_current_dir";
     }
 };
+
+class kill : public SysCallException{
+public:
+    string print() override {
+        return "kill";
+    }
+};
+
+class waitpid : public SysCallException{
+public:
+    string print() override {
+        return "waitpid";
+    }
+};
+
 #endif //OSHW1_SYSCALLEXCEPTION_H
