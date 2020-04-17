@@ -33,13 +33,6 @@ public:
 
 private:
     void prepare();
-    void cleanUp(){
-        if(readFD > -1)
-            if(close(readFD) == CLOSE_ERR)
-                throw closeError();
-        if(writeFD > -1)
-            if(close(writeFD) == CLOSE_ERR)
-                throw closeError();
-    }
+    void cleanUp();
 };
 #endif //OSHW1_EXTERNALCOMMAND_H

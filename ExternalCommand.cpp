@@ -10,7 +10,9 @@ void ExternalCommand::execute() {
     cmd_args[1] = flag;
     cmd_args[2] = cmd;
     cmd_args[3] = NULL;
-    execv("/bin/bash",cmd_args);
+
+    if(execv("/bin/bash",cmd_args) == EXECV_ERR)
+        throw execvError();
 }
 
 ExternalCommand::ExternalCommand(string& decrypted,string &originalCommandLine, string *args, int size) :
@@ -60,5 +62,13 @@ void CopyCommand::prepare() {
     if(readFD == READ_ERR || writeFD == WRITE_ERR){
         throw openError();
     }
+}
 
+void CopyCommand::cleanUp() {
+    if(readFD > -1)
+        if(close(readFD) == CLOSE_ERR)
+            throw closeError();
+    if(writeFD > -1)
+        if(close(writeFD) == CLOSE_ERR)
+            throw closeError();
 }

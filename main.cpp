@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-
+#include <errno.h>
 const std::string WHITESPACE = " \n\r\t\f\v";
 using namespace std;
 bool isBackground(string& cmd){
@@ -27,17 +27,9 @@ int parseCommand(const string& cmd,string* splitCmd){
     return i;
 }
 
+extern int errno;
+
 int main() {
-    string s = "chprompt";
-    cout << stoi(s) <<endl;
-    string arr[100];
-    int i = 0;
-   // cout << isBackground(s) << endl;
-    cout << s <<endl;
-    int si = parseCommand(s,arr);
-    while(i < si){
-        cout << arr[++i] << endl;
-    }
-    //removeBackgroundSign(s);
+
     return 0;
 }
