@@ -6,15 +6,16 @@
 
 JobsList::JobsList() : maxId(0), jobs(), fg(nullptr) {}
 
-void
-JobsList::addJob(const ExternalCommand &command, pid_t pid, const string &path,
+void JobsList::addJob(const string& originalCmd, pid_t pid, const string &path,
                  bool onBg) {
     update();
-    jobs.emplace_back(command, ++maxId, pid, path);
+    jobs.emplace_back(originalCmd, ++maxId, pid, path);
 
     if(!onBg)
         bringFG(maxId);
 }
+
+
 
 void JobsList::printJobsList() {
     update();

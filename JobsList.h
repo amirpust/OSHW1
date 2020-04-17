@@ -16,7 +16,7 @@ public:
     static JobsList& getInstance();
 
     ~JobsList() = default;
-    void addJob(const ExternalCommand& command,pid_t pid, const string& path, bool onBg);
+    void addJob(const string& originalCmd, pid_t pid, const string& path, bool onBg);
     void printJobsList();
     void killAllJobs();
     int getSize();

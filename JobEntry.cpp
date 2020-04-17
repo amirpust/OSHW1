@@ -4,8 +4,9 @@
 
 #include "JobEntry.h"
 
-JobEntry::JobEntry(const ExternalCommand& _cmd, int _jobId, pid_t _p, const string& _path) :
-        cmd(ExternalCommand(_cmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), path(string(_path)){}
+JobEntry::JobEntry (const string& _originalCmd, int _jobId, pid_t _p, const string& _path) :
+       originalcmd(string(_originalCmd)), status(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), path(string(_path)){}
+
 
 void JobEntry::updateStatus() {
     if(status == END)
@@ -56,10 +57,8 @@ time_t JobEntry::getTime() const {
     return difftime(time(nullptr),startTime);
 }
 
-const string JobEntry::print() const{
-    if(status == STOP)
-        return cmd.print();
-    return cmd.print();
+const string& JobEntry::print() const{
+    return originalcmd;
 }
 
 void JobEntry::stopCmd() {
@@ -89,7 +88,7 @@ void JobEntry::killCmd() {
     updateStatus();
 }
 
-JobEntry::JobEntry(const JobEntry &toCopy) : cmd(toCopy.cmd) , status(toCopy.status), startTime(toCopy.startTime), stopTime(toCopy.stopTime),
+JobEntry::JobEntry(const JobEntry &toCopy) : originalcmd(toCopy.originalcmd) , status(toCopy.status), startTime(toCopy.startTime), stopTime(toCopy.stopTime),
                                              jobId(toCopy.jobId), pid(toCopy.pid), path(toCopy.path){}
 
 

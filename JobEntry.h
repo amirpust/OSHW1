@@ -9,7 +9,7 @@ typedef enum{
 }cmdStatus;
 
 class JobEntry {
-    ExternalCommand cmd;
+    const string originalcmd;
     cmdStatus status;
     time_t startTime;
     time_t stopTime;
@@ -19,15 +19,15 @@ class JobEntry {
 
 public:
 
-    JobEntry(const ExternalCommand& _cmd, int _jobId, pid_t _p, const string& _path);
+    JobEntry(const string& originalCmd, int _jobId, pid_t _p, const string& _path);
     JobEntry(const JobEntry& toCopy);
     void updateStatus();
     cmdStatus getStatus() const;
     int getJobId() const;
     pid_t getPid() const;
-    const string &getPath() const;
+    const string& getPath() const;
     time_t getTime() const;
-    const string print() const;
+    const string& print() const;
 
     void stopCmd();
     void continueCmd();
