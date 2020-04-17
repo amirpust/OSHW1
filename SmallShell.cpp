@@ -18,45 +18,51 @@ void SmallShell::executeCommand(const char *cmd_line) {
     int size = 0;
     pid_t pipePid = -1;
 
-    cmdDecryptor(original,&cmdStr,splitCmd,&size,&bg);
+    cmdDecryptor(original, &cmdStr, splitCmd, &size, &bg);
 
     PRINT_PARAM(bg);
     int index = checkPipe(splitCmd, size, &pipePid);
-    if (index >= 0){
-        if(pipePid == 0){
+    if (index >= 0) {
+        if (pipePid == 0) {
             size = index;
-        }else{
+        } else {
             size -= (index + 1);
-            for(int i = 0; i < size; i++)
-                splitCmd[i] = splitCmd[i+index+1];
+            for (int i = 0; i < size; i++)
+                splitCmd[i] = splitCmd[i + index + 1];
         }
     }
 
 
     redirectionType io = identifyRedirection(splitCmd, size, &path);
-    prepareIO(io,path);
-    Command* cmd = createCommand(original, cmdStr, splitCmd, size);
+    prepareIO(io, path);
+    Command *cmd = createCommand(original, cmdStr, splitCmd, size);
 
 
-    if (cmd->getType() == builtIn){
-        cmd->execute();
-    }else{
-        pid_t childPid = fork();
-        ExternalCommand externalCommand(*dynamic_cast<ExternalCommand*>(cmd));
+    if (cmd->getType() == builtIn) {
+        cmd->execute(); // TODO : delete this cmd also after execute
         delete cmd;
-        if(childPid == 0){ //Child
+    }else if (cmd->getType() == copyCmd) {
+        pid_t childPid = fork();
+        if (childPid == 0) { //Child
             setpgrp();
-            externalCommand.execute();
+            cmd->execute();
             exit(-1);
-        }else {
-            jobs.addJob(externalCommand, childPid, "./", bg);
         }
+    }else {
+            pid_t childPid = fork();
+            ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
+            delete cmd;
+            if (childPid == 0) { //Child
+                setpgrp();
+                externalCommand.execute();
+                exit(-1);
+            } else {
+                jobs.addJob(externalCommand, childPid, "./", bg);
+            }
+        }
+        cleanUpIO(pipePid);
+        PRINT_END;
     }
-
-
-    cleanUpIO(pipePid);
-    PRINT_END;
-}
 
 void SmallShell::setName(const string &newName) {
     if(newName.empty())
@@ -94,7 +100,7 @@ Command* SmallShell::createCommand(string &original, string &cmdLine, string *sp
                           int size) {
     const std::string commands [] = {
             "chprompt", "showpid", "pwd", "cd", "jobs", "kill", "fg",
-            "bg", "quit"
+            "bg", "quit" , "cp"
     };
 
     if (original.find(commands[0]) == 0)
@@ -123,6 +129,8 @@ Command* SmallShell::createCommand(string &original, string &cmdLine, string *sp
 
     if (original.find(commands[8]) == 0)
         return new QuitCommand(cmdLine,original,splitCmd,size);
+    if (original.find(commands[9]) == 0)
+        return new CopyCommand(cmdLine,original,splitCmd,size);
 
     return new ExternalCommand(cmdLine,original,splitCmd,size);
 }
@@ -141,8 +149,7 @@ SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), 
     stdErr = dup(2);
 }
 
-void
-SmallShell::cmdDecryptor(const string &original, string *cmd, string *splitCmd,
+void SmallShell::cmdDecryptor(const string &original, string *cmd, string *splitCmd,
                          int *size, bool *bg) {
     *cmd = string(original);        // will copy the original cmd to make changes in it
     *bg = isBackground(original);   // checks if there is '&'
