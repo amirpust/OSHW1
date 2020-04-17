@@ -13,6 +13,7 @@ void JobEntry::updateStatus() {
         return;
 
     int newStatus = 0;
+
     pid_t p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
 
     if( p != 0){

@@ -12,6 +12,7 @@ public:
     virtual string print() = 0;
 };
 
+#define OPEN_ERR -1
 class openError : public SysCallException{
 public:
     string print() override {
@@ -19,6 +20,7 @@ public:
     }
 };
 
+#define CLOSE_ERR -1
 class closeError : public SysCallException{
 public:
     string print() override {
@@ -26,6 +28,7 @@ public:
     }
 };
 
+#define DUP_ERR -1
 class dupError : public SysCallException{
 public:
     string print() override {
@@ -33,6 +36,7 @@ public:
     }
 };
 
+#define WRITE_ERR -1
 class writeError : public SysCallException{
 public:
     string print() override {
@@ -40,6 +44,7 @@ public:
     }
 };
 
+#define READ_ERR -1
 class readError : public SysCallException{
 public:
     string print() override {
@@ -47,6 +52,7 @@ public:
     }
 };
 
+#define FORK_ERR -1
 class forkError : public SysCallException{
 public:
     string print() override {
@@ -54,6 +60,7 @@ public:
     }
 };
 
+#define PIPE_ERR -1
 class pipeError : public SysCallException{
 public:
     string print() override {
@@ -61,6 +68,7 @@ public:
     }
 };
 
+#define CHDIR_ERR -1
 class chdirError : public SysCallException{
 public:
     string print() override {
@@ -68,6 +76,7 @@ public:
     }
 };
 
+#define EXECV_ERR -1
 class execvError : public SysCallException{
 public:
     string print() override {
@@ -75,6 +84,7 @@ public:
     }
 };
 
+#define GETPID_ERR -1
 class getpidError : public SysCallException{
 public:
     string print() override {
@@ -82,6 +92,7 @@ public:
     }
 };
 
+#define GET_CURR_DIR_ERR NULL
 class getCurrentDirError : public SysCallException{
 public:
     string print() override {
@@ -89,6 +100,7 @@ public:
     }
 };
 
+#define KILL_ERR -1
 class killError : public SysCallException{
 public:
     string print() override {
@@ -96,6 +108,7 @@ public:
     }
 };
 
+#define WAIT_PID_ERR -1
 class waitpidError : public SysCallException{
 public:
     string print() override {
