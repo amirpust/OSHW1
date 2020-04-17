@@ -24,9 +24,10 @@ PwdCommand::PwdCommand(string &decrypted, string &originalCommandLine, string *a
 
 void PwdCommand::execute() {
     char* dir =get_current_dir_name();
-    if(dir == GET_CURR_DIR_ERR)
+    if(dir == GET_CURR_DIR_ERR){
         throw getCurrentDirError();
-    cout << dir << endl; //TODO : check
+    }
+    cout << dir << endl;
     free(dir);
 }
 
