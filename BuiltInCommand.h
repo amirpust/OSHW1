@@ -5,7 +5,7 @@
 #include "Command.h"
 #include "JobsList.h"
 #include "SmallShell.h"
-
+#include "SysCallException.h"
 
 class BuiltInCommand : public Command{
 public:

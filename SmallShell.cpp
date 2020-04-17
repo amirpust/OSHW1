@@ -78,14 +78,18 @@ const string &SmallShell::getPreviousDir() const {
 
 void SmallShell::cd(const string &str) {
     if(str == "-"){
-        chdir(previousDir.c_str());
+        if(chdir(previousDir.c_str()) == -1)
+            throw chdirError();
         string temp = currentDir;
         currentDir = previousDir;
         previousDir = temp;
     }else{
         previousDir = currentDir;
-        chdir(str.c_str());
+        if(chdir(str.c_str()) == -1)
+            throw chdirError();
         char* temp = get_current_dir_name();
+        if(temp ==NULL)
+            throw getCurrentDirError();
         currentDir = string(temp);
         free(temp);
     }

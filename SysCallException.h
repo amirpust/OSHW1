@@ -89,14 +89,14 @@ public:
     }
 };
 
-class kill : public SysCallException{
+class killError : public SysCallException{
 public:
     string print() override {
         return "kill";
     }
 };
 
-class waitpid : public SysCallException{
+class waitpidError : public SysCallException{
 public:
     string print() override {
         return "waitpid";

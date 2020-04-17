@@ -23,7 +23,11 @@ PwdCommand::PwdCommand(string &decrypted, string &originalCommandLine, string *a
         BuiltInCommand(decrypted,originalCommandLine,args,size){}
 
 void PwdCommand::execute() {
-    cout << get_current_dir_name() << endl;
+    char* dir =get_current_dir_name();
+    if(dir == NULL)
+        throw getCurrentDirError();
+    cout << dir << endl; //TODO : check
+    free(dir);
 }
 
 CdCommand::CdCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
@@ -45,7 +49,7 @@ JobsCommand::JobsCommand(string &decrypted, string &originalCommandLine, string 
 
 void JobsCommand::execute() {
     try{
-        JobsList::getInstance().printJobsList(); //TODO: add the try catch policy
+        JobsList::getInstance().printJobsList();
     }catch (JobsList::emptyList& e){
         throw emptyList(splitLine[0].c_str());
     }
@@ -140,5 +144,6 @@ void QuitCommand::execute() {
              std::to_string(JobsList::getInstance().getSize()) << " jobs:" << endl;
         JobsList::getInstance().killAllJobs();
     }
-    kill(SmallShell::getInstance().getMyPid(), SIGKILL);
+    if(kill(SmallShell::getInstance().getMyPid(), SIGKILL) == -1)
+        throw kill();
 }
