@@ -28,6 +28,5 @@ int main(int argc, char* argv[]) {
             std::cout << "smash" << e.print() << endl;
         }
     }
-    PRINT_END;
     return 0;
 }

@@ -9,7 +9,6 @@ SmallShell &SmallShell::getInstance() {
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
-    PRINT_START;
     bool bg;
     string original(cmd_line);
     string cmdStr;
@@ -20,7 +19,6 @@ void SmallShell::executeCommand(const char *cmd_line) {
 
     cmdDecryptor(original, &cmdStr, splitCmd, &size, &bg);
 
-    PRINT_PARAM(bg);
     int index = checkPipe(splitCmd, size, &pipePid);
     if (index >= 0) {
         if (pipePid == 0) {
@@ -65,7 +63,6 @@ void SmallShell::executeCommand(const char *cmd_line) {
             }
         }
         cleanUpIO(pipePid);
-        PRINT_END;
     }
 
 void SmallShell::setName(const string &newName) {
@@ -85,7 +82,6 @@ void SmallShell::cd(const string &str) {
         string temp = currentDir;
         currentDir = previousDir;
         previousDir = temp;
-        PRINT_PARAM(previousDir);
     }else{
         previousDir = currentDir;
         chdir(str.c_str());
@@ -213,6 +209,10 @@ void SmallShell::prepareIO(redirectionType type, string path) {
 void SmallShell::cleanUpIO(pid_t pipePid) {
     if(pipePid == 0)
         exit(0);
+    if(pipePid > 0){
+        int status;
+        waitpid(pipePid, &status);
+    }
 
     close(0);
     close(1);
@@ -221,4 +221,48 @@ void SmallShell::cleanUpIO(pid_t pipePid) {
     dup(stdIn);
     dup(stdOut);
     dup(stdErr);
+}
+
+int SmallShell::checkPipe(string *split, int size, pid_t *enterPid) {
+
+    for(int i = 0; i < size; i++){
+        if(split[i]  == "|"){
+            splitPipe(pipeRegular, enterPid);
+            return i;
+
+        }else if(split[i] == "|&"){
+            splitPipe(pipeStderr, enterPid);
+            return i;
+        }
+    }
+    return -1;
+}
+
+void SmallShell::splitPipe(pipeType type, pid_t *enterPid) {
+    fileDescriptor pipeFD[2];
+    if (pipe(pipeFD) != 0)
+        exit(-1); //TODO: handle properly
+
+    (*enterPid) = fork();
+
+    if ((*enterPid) == 0){                               //Enter (write to pipe)
+        if(type == pipeRegular){
+            close(1);
+        }else{
+            close(2);
+        }
+        dup(pipeFD[1]);
+
+
+
+    }else{                                              //Exit (read from pipe)
+        close(0);
+        dup(pipeFD[0]);
+    }
+}
+
+SmallShell::~SmallShell() {
+    close(stdIn);
+    close(stdOut);
+    close(stdErr);
 }
