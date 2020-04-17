@@ -30,6 +30,8 @@ int main(int argc, char* argv[]) {
         }catch (SysCallException& e){
             std::cerr <<"smash error: " << e.print() << " failed" << endl;
         }
+        if (getpid() != smash.getMyPid())
+            exit(0);
     }
     return 0;
 }

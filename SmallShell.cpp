@@ -48,7 +48,8 @@ void SmallShell::executeCommand(const char *cmd_line) {
         CopyCommand copyCommand(*dynamic_cast<CopyCommand*>(cmd));
         delete cmd;
         if (childPid == 0) { //Child
-            setpgrp();
+            if (setpgrp() == SETPGRP_ERR);
+                throw setpgrpError();
             copyCommand.execute();
             exit(-1);
         }else{
@@ -59,7 +60,8 @@ void SmallShell::executeCommand(const char *cmd_line) {
             ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
             delete cmd;
             if (childPid == 0) { //Child
-                setpgrp();
+                if (setpgrp() == SETPGRP_ERR);
+                    throw setpgrpError();
                 externalCommand.execute();
                 exit(-1);
             } else {
