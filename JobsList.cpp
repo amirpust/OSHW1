@@ -165,7 +165,7 @@ JobEntry &JobsList::getLastStoppedJob() {
     }
 
     if(!lastStopped){
-        throw notExist();
+        throw emptyList();
     }
 
     return (*lastStopped);
