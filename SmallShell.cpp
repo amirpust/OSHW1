@@ -43,10 +43,14 @@ void SmallShell::executeCommand(const char *cmd_line) {
         delete cmd;
     }else if (cmd->getType() == copyCmd) {
         pid_t childPid = fork();
+        CopyCommand copyCommand(*dynamic_cast<CopyCommand*>(cmd));
+        delete cmd;
         if (childPid == 0) { //Child
             setpgrp();
-            cmd->execute();
+            copyCommand.execute();
             exit(-1);
+        }else{
+            jobs.addJob(copyCommand.print(), childPid, "./", bg);
         }
     }else {
             pid_t childPid = fork();
@@ -57,7 +61,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
                 externalCommand.execute();
                 exit(-1);
             } else {
-                jobs.addJob(externalCommand, childPid, "./", bg);
+                jobs.addJob(externalCommand.print(), childPid, "./", bg);
             }
         }
         cleanUpIO(pipePid);
