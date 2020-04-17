@@ -45,6 +45,7 @@ private:
     int parseCommand(const string& cmd, string* splitCmd);
     bool isBackground(const string& cmd);
     void removeBackgroundSign(string& cmd);
+    void removeRedirection(string& cmd);
     redirectionType identifyRedirection(string* splitCmd, int size, string* path);
     void prepareIO(redirectionType type, const string& path);
     int checkPipe(string split[], int size, pid_t* enterPid);

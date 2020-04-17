@@ -4,7 +4,7 @@ void ExternalCommand::execute() {
     char bash[10] = "/bin/bash";
     char flag[3] = "-c";
     char cmd[COMMAND_ARGS_MAX_LENGTH + 1];
-    strcpy(cmd,decryptedCmd.c_str());
+    strcpy(cmd,this->cmd.c_str());
     char* cmd_args[4];
     cmd_args[0] = bash;
     cmd_args[1] = flag;
@@ -16,17 +16,17 @@ void ExternalCommand::execute() {
 }
 
 ExternalCommand::ExternalCommand(string& decrypted,string &originalCommandLine, string *args, int size) :
-Command(decrypted,originalCommandLine,args,size,external){}
+Command(originalCommandLine,args,size,external), cmd(decrypted){}
 
-CopyCommand::CopyCommand(string &decrypted, string &originalCommandLine, string *args, int size)
-        : Command(decrypted, originalCommandLine, args, size, copyCmd){
+CopyCommand::CopyCommand(string &originalCommandLine, string *args, int size)
+        : Command(originalCommandLine, args, size, copyCmd){
     //TODO: check arguments
     oldFile = splitLine[1];
     newFile = splitLine[2];
 }
 
 CopyCommand::CopyCommand(CopyCommand const &toCopy)
-        :Command(toCopy.decryptedCmd, toCopy.originalCommandLine, toCopy.splitLine, toCopy.size, copyCmd){
+        :Command(toCopy.originalCommandLine, toCopy.splitLine, toCopy.size, copyCmd){
     oldFile = toCopy.oldFile;
     newFile = toCopy.newFile;
 }

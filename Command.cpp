@@ -4,9 +4,9 @@
 
 #include "Command.h"
 
-Command::Command(const string& cmdLine,const string &originalCommandLine,const string *args,const int size
+Command::Command(const string &originalCommandLine,const string *args,const int size
         , cmdType type)
-        :decryptedCmd(string(cmdLine)) ,originalCommandLine(string(originalCommandLine))
+        :originalCommandLine(string(originalCommandLine))
         , size(size), type(type) {
     for (int i = 0; i < size; ++i) {
         splitLine[i] = string(args[i]);
@@ -15,5 +15,9 @@ Command::Command(const string& cmdLine,const string &originalCommandLine,const s
 
 cmdType Command::getType() const {
     return type;
+}
+
+const string Command::print() const {
+    return originalCommandLine;
 }
 

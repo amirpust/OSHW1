@@ -32,6 +32,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
 
 
     redirectionType io = identifyRedirection(splitCmd, size, &path);
+    removeRedirection(cmdStr);
     prepareIO(io, path);
     Command *cmd = createCommand(original, cmdStr, splitCmd, size);
 
@@ -118,33 +119,33 @@ Command* SmallShell::createCommand(string &original, string &cmdLine, string *sp
     };
 
     if (original.find(commands[0]) == 0)
-        return new ChpromptCommand(cmdLine,original,splitCmd,size);
+        return new ChpromptCommand(original,splitCmd,size);
 
     if (original.find(commands[1]) == 0)
-        return new ShowpidCommand(cmdLine,original,splitCmd,size);
+        return new ShowpidCommand(original,splitCmd,size);
 
     if (original.find(commands[2]) == 0)
-        return new PwdCommand(cmdLine,original,splitCmd,size);
+        return new PwdCommand(original,splitCmd,size);
 
     if (original.find(commands[3]) == 0)
-        return new CdCommand(cmdLine,original,splitCmd,size);
+        return new CdCommand(original,splitCmd,size);
 
     if (original.find(commands[4]) == 0)
-        return new JobsCommand(cmdLine,original,splitCmd,size);
+        return new JobsCommand(original,splitCmd,size);
 
     if (original.find(commands[5]) == 0)
-        return new KillCommand(cmdLine,original,splitCmd,size);
+        return new KillCommand(original,splitCmd,size);
 
     if (original.find(commands[6]) == 0)
-        return new FgCommand(cmdLine,original,splitCmd,size);
+        return new FgCommand(original,splitCmd,size);
 
     if (original.find(commands[7]) == 0)
-        return new BgCommand(cmdLine,original,splitCmd,size);
+        return new BgCommand(original,splitCmd,size);
 
     if (original.find(commands[8]) == 0)
-        return new QuitCommand(cmdLine,original,splitCmd,size);
+        return new QuitCommand(original,splitCmd,size);
     if (original.find(commands[9]) == 0)
-        return new CopyCommand(cmdLine,original,splitCmd,size);
+        return new CopyCommand(original,splitCmd,size);
 
     return new ExternalCommand(cmdLine,original,splitCmd,size);
 }
@@ -229,7 +230,7 @@ void SmallShell::prepareIO(redirectionType type, const string& path) {
         throw closeError();
 
     if(type == override){
-        if ( open(path.c_str(),O_CREAT | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH) == OPEN_ERR)
+        if ( open(path.c_str(),O_CREAT | O_RDWR | O_TRUNC, S_IRWXU | S_IRGRP | S_IROTH) == OPEN_ERR)
             throw openError(__FUNCTION__,__LINE__);
     }else{
         if ( open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH ) == OPEN_ERR)
@@ -306,4 +307,12 @@ SmallShell::~SmallShell() {
     close(stdIn);
     close(stdOut);
     close(stdErr);
+}
+
+void SmallShell::removeRedirection(string &cmd) {
+    int index = static_cast<int>(cmd.find_first_of('>'));
+    if(index == string::npos)
+        return;
+
+    cmd[index] = '\0';
 }

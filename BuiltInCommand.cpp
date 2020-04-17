@@ -2,8 +2,8 @@
 #include "SmallShell.h"
 
 #define MAX_SIG 31
-ChpromptCommand::ChpromptCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-BuiltInCommand(decrypted,originalCommandLine,args,size){}
+ChpromptCommand::ChpromptCommand( string &originalCommandLine, string *args, int size) :
+BuiltInCommand(originalCommandLine,args,size){}
 
 void ChpromptCommand::execute() {
     if(size > 1){
@@ -12,15 +12,15 @@ void ChpromptCommand::execute() {
         SmallShell::getInstance().setName("");
 }
 
-ShowpidCommand::ShowpidCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-        BuiltInCommand(decrypted,originalCommandLine,args,size){}
+ShowpidCommand::ShowpidCommand( string &originalCommandLine, string *args, int size) :
+        BuiltInCommand(originalCommandLine,args,size){}
 
 void ShowpidCommand::execute() {
     cout << "smash pid is "<< SmallShell::getInstance().getMyPid() << endl;
 }
 
-PwdCommand::PwdCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-        BuiltInCommand(decrypted,originalCommandLine,args,size){}
+PwdCommand::PwdCommand(string &originalCommandLine, string *args, int size) :
+        BuiltInCommand(originalCommandLine,args,size){}
 
 void PwdCommand::execute() {
     char* dir =get_current_dir_name();
@@ -31,8 +31,8 @@ void PwdCommand::execute() {
     free(dir);
 }
 
-CdCommand::CdCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-BuiltInCommand(decrypted,originalCommandLine,args,size){}
+CdCommand::CdCommand( string &originalCommandLine, string *args, int size) :
+BuiltInCommand(originalCommandLine,args,size){}
 
 void CdCommand::execute() {
     if(size > 2){
@@ -45,8 +45,8 @@ void CdCommand::execute() {
     SmallShell::getInstance().cd(splitLine[1]);
 }
 
-JobsCommand::JobsCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-        BuiltInCommand(decrypted,originalCommandLine,args,size){}
+JobsCommand::JobsCommand(string &originalCommandLine, string *args, int size) :
+        BuiltInCommand(originalCommandLine,args,size){}
 
 void JobsCommand::execute() {
     try{
@@ -56,8 +56,8 @@ void JobsCommand::execute() {
     }
 }
 
-KillCommand::KillCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-        BuiltInCommand(decrypted,originalCommandLine,args,size){
+KillCommand::KillCommand(string &originalCommandLine, string *args, int size) :
+        BuiltInCommand(originalCommandLine,args,size){
     if(size != 3)
         throw invalidArgs(splitLine[0].c_str());
     try {
@@ -83,8 +83,8 @@ void KillCommand::execute() {
     }
 }
 
-FgCommand::FgCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-        BuiltInCommand(decrypted,originalCommandLine,args,size){
+FgCommand::FgCommand(string &originalCommandLine, string *args, int size) :
+        BuiltInCommand(originalCommandLine,args,size){
     if(size != 2){
         throw invalidArgs(splitLine[0].c_str());
     }
@@ -108,8 +108,8 @@ void FgCommand::execute() {
     }
 }
 
-BgCommand::BgCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-        BuiltInCommand(decrypted,originalCommandLine,args,size){
+BgCommand::BgCommand(string &originalCommandLine, string *args, int size) :
+        BuiltInCommand(originalCommandLine,args,size){
     if(size == 1)
         jobId = 0;
     else{
@@ -136,8 +136,8 @@ void BgCommand::execute() {
     }
 }
 
-QuitCommand::QuitCommand(string &decrypted, string &originalCommandLine, string *args, int size) :
-BuiltInCommand(decrypted,originalCommandLine,args,size){}
+QuitCommand::QuitCommand(string &originalCommandLine, string *args, int size) :
+BuiltInCommand(originalCommandLine,args,size){}
 
 void QuitCommand::execute() {
     if(size > 1 && splitLine[1] == "kill"){
