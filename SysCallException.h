@@ -116,11 +116,11 @@ public:
     }
 };
 
-#define WAIT_PID_ERR -1
-class waitpidError : public SysCallException{
+#define SETPGRP_ERR -1
+class setpgrpError : public SysCallException{
 public:
     string print() override {
-        return "waitpid";
+        return "setpgrp";
     }
 };
 

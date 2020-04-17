@@ -24,7 +24,7 @@ PwdCommand::PwdCommand(string &decrypted, string &originalCommandLine, string *a
 
 void PwdCommand::execute() {
     char* dir =get_current_dir_name();
-    if(dir == NULL)
+    if(dir == GET_CURR_DIR_ERR)
         throw getCurrentDirError();
     cout << dir << endl; //TODO : check
     free(dir);
@@ -144,6 +144,6 @@ void QuitCommand::execute() {
              std::to_string(JobsList::getInstance().getSize()) << " jobs:" << endl;
         JobsList::getInstance().killAllJobs();
     }
-    if(kill(SmallShell::getInstance().getMyPid(), SIGKILL) == -1)
+    if(kill(SmallShell::getInstance().getMyPid(), SIGKILL) == KILL_ERR)
         throw killError();
 }
