@@ -15,6 +15,8 @@ void JobEntry::updateStatus() {
     int newStatus = 0;
 
     pid_t p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
+    if (p == WAIT_PID_ERR)
+        throw waitpidError();
 
     if( p != 0){
         if(WIFSTOPPED(newStatus)){
@@ -58,29 +60,31 @@ const string& JobEntry::print() const{
 }
 
 void JobEntry::stopCmd() {
-    assert(status == RUN); // TODO: debug
+    /*
     if(status != RUN)
-        return;
+        return;*/// TODO: check
 
-    kill(pid, SIGSTOP);
+    if (kill(pid, SIGSTOP) == KILL_ERR)
+        throw killError();
     updateStatus();
 }
 
 void JobEntry::continueCmd() {
-    assert(status == STOP); //TODO: debug
+    /*
     if(status != STOP)
-        return;
+        return;*/
 
-    kill(pid, SIGCONT); //TODO:Check
+    if(kill(pid, SIGCONT) == KILL_ERR)
     updateStatus();
 }
 
 void JobEntry::killCmd() {
-    assert(status != END); //TODO: debug
+    /*
     if(status == END)
-        return;
+        return;*/
 
-    kill(pid, SIGKILL);
+    if(kill(pid, SIGKILL) == KILL_ERR)
+        throw killError();
     updateStatus();
 }
 

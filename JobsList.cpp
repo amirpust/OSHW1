@@ -64,7 +64,8 @@ void JobsList::sendSigById(int sig, int jobId) {
     }else if(sig == SIGCONT){
         job->continueCmd();
     }else{
-        kill(job->getPid(),sig);
+        if(kill(job->getPid(),sig) == KILL_ERR)
+            throw killError();
     }
 }
 

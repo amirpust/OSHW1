@@ -116,4 +116,12 @@ public:
     }
 };
 
+#define WAIT_PID_ERR -1
+class waitpidError : public SysCallException{
+public:
+    string print() override {
+        return "waitpid";
+    }
+};
+
 #endif //OSHW1_SYSCALLEXCEPTION_H

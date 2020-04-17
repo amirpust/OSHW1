@@ -37,10 +37,14 @@ void SmallShell::executeCommand(const char *cmd_line) {
 
 
     if (cmd->getType() == builtIn) {
-        cmd->execute(); // TODO : delete this cmd also after execute
+        cmd->execute();
         delete cmd;
     }else if (cmd->getType() == copyCmd) {
         pid_t childPid = fork();
+        if (childPid == FORK_ERR){
+            delete cmd;
+            throw forkError();
+        }
         CopyCommand copyCommand(*dynamic_cast<CopyCommand*>(cmd));
         delete cmd;
         if (childPid == 0) { //Child
@@ -215,7 +219,7 @@ void SmallShell::cleanUpIO(pid_t pipePid) {
         exit(0);
     if(pipePid > 0){
         int status;
-        waitpid(pipePid, &status);
+        waitpid(pipePid, &status, 0);
     }
 
     close(0);
