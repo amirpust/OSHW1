@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
         }
         smash.cleanUpIO(-1);
         if (getpid() != smash.getMyPid())
-            exit(0);
+            return 0;
     }
     return 0;
 }
