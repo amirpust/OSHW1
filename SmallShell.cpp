@@ -1,24 +1,6 @@
 #include "SmallShell.h"
 #include "BuiltInCommand.h"
 
-std::string ltrim(const std::string& s)
-{
-    size_t start = s.find_first_not_of(WHITESPACE);
-    return (start == std::string::npos) ? "" : s.substr(start);
-}
-
-std::string rtrim(const std::string& s)
-{
-    size_t end = s.find_last_not_of(WHITESPACE);
-    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
-}
-
-std::string trim(const std::string& s)
-{
-    return rtrim(ltrim(s));
-}
-
-
 SmallShell &SmallShell::getInstance() {
     static SmallShell instance; // Guaranteed to be destroyed.
     // Instantiated on first use.
@@ -178,7 +160,6 @@ SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash")
     char* temp = get_current_dir_name();
     if(temp == GET_CURR_DIR_ERR)
         throw getCurrentDirError();
-
 
     currentDir = string(temp);
     free(temp);

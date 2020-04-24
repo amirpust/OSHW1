@@ -61,9 +61,14 @@ KillCommand::KillCommand(string &originalCommandLine, string *args, int size) :
     if(size != 3)
         throw invalidArgs(splitLine[0].c_str());
     try {
-        sig =  stoi(splitLine[1],nullptr);
-        jobId = stoi(splitLine[2], nullptr);
 
+        size_t indexSig;
+        size_t indexJobId;
+        sig =  stoi(splitLine[1], &indexSig);
+        jobId = stoi(splitLine[2], &indexJobId);
+
+        if(indexJobId < splitLine[2].size() || indexSig < splitLine[1].size())
+            throw invalidArgs(splitLine[0].c_str());
     }catch(exception& e){
         throw invalidArgs(splitLine[0].c_str());
     }
@@ -89,6 +94,7 @@ FgCommand::FgCommand(string &originalCommandLine, string *args, int size) :
         throw invalidArgs(splitLine[0].c_str());
     }
     try {
+        size_t
         jobId = stoi(args[1], nullptr);
     }catch(exception& e){
         throw invalidArgs(splitLine[0].c_str());
@@ -114,7 +120,12 @@ BgCommand::BgCommand(string &originalCommandLine, string *args, int size) :
         jobId = 0;
     else{
         try {
-            jobId = stoi(args[1], nullptr);
+
+            size_t index;
+            jobId = stoi(args[1], &index);
+
+            if(index < args[1].size())
+                invalidArgs(splitLine[0].c_str());
         }catch(exception& e){
             throw invalidArgs(splitLine[0].c_str());
         }
