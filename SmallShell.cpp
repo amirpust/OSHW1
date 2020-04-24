@@ -1,6 +1,23 @@
 #include "SmallShell.h"
 #include "BuiltInCommand.h"
 
+std::string ltrim(const std::string& s)
+{
+    size_t start = s.find_first_not_of(WHITESPACE);
+    return (start == std::string::npos) ? "" : s.substr(start);
+}
+
+std::string rtrim(const std::string& s)
+{
+    size_t end = s.find_last_not_of(WHITESPACE);
+    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
+}
+
+std::string trim(const std::string& s)
+{
+    return rtrim(ltrim(s));
+}
+
 
 SmallShell &SmallShell::getInstance() {
     static SmallShell instance; // Guaranteed to be destroyed.
@@ -9,6 +26,7 @@ SmallShell &SmallShell::getInstance() {
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
+
     bool bg;
     string original = cmdToString(cmd_line);
     string cmdStr;
@@ -118,33 +136,34 @@ Command* SmallShell::createCommand(string &original, string &cmdLine, string *sp
             "bg", "quit" , "cp"
     };
 
-    if (original.find(commands[0]) == 0)
+    if (splitCmd[0] == commands[0])
         return new ChpromptCommand(original,splitCmd,size);
 
-    if (original.find(commands[1]) == 0)
+    if (splitCmd[0] == commands[1])
         return new ShowpidCommand(original,splitCmd,size);
 
-    if (original.find(commands[2]) == 0)
+    if (splitCmd[0] == commands[2])
         return new PwdCommand(original,splitCmd,size);
 
-    if (original.find(commands[3]) == 0)
+    if (splitCmd[0] == commands[3])
         return new CdCommand(original,splitCmd,size);
 
-    if (original.find(commands[4]) == 0)
+    if (splitCmd[0] == commands[4])
         return new JobsCommand(original,splitCmd,size);
 
-    if (original.find(commands[5]) == 0)
+    if (splitCmd[0] == commands[5])
         return new KillCommand(original,splitCmd,size);
 
-    if (original.find(commands[6]) == 0)
+    if (splitCmd[0] == commands[6])
         return new FgCommand(original,splitCmd,size);
 
-    if (original.find(commands[7]) == 0)
+    if (splitCmd[0] == commands[7])
         return new BgCommand(original,splitCmd,size);
 
-    if (original.find(commands[8]) == 0)
+    if (splitCmd[0] == commands[8])
         return new QuitCommand(original,splitCmd,size);
-    if (original.find(commands[9]) == 0)
+
+    if (splitCmd[0] == commands[9])
         return new CopyCommand(original,splitCmd,size);
 
     return new ExternalCommand(cmdLine,original,splitCmd,size);
@@ -321,4 +340,33 @@ bool SmallShell::isRunning() const {
 
 void SmallShell::setRunning(bool running) {
     SmallShell::running = running;
+}
+
+string SmallShell::cmdToString(const char *cmdLine) {
+    if (!cmdLine)
+        return "";
+    string newCmd = "";
+    for ( int i = 0; cmdLine[i] != '\0'; i++){
+
+        if(cmdLine[i] == '>'){
+            if(cmdLine[i+1] == '>'){
+                newCmd.append(" >> ");
+                i++;
+            }else{
+                newCmd.append(" > ");
+            }
+        }else if(cmdLine[i] == '|'){
+            if(cmdLine[i+1] == '&'){
+                newCmd += " |& ";
+                i++;
+            }else{
+                newCmd += " | ";
+            }
+        }else if(WHITESPACE.find(cmdLine[i]) != string::npos){
+            newCmd += " ";
+        }else{
+            newCmd += cmdLine[i];
+        }
+    }
+    return newCmd;
 }

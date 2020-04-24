@@ -55,31 +55,7 @@ private:
     void prepareIO(redirectionType type, const string& path);
     int checkPipe(string split[], int size, pid_t* enterPid);
     void splitPipe(pipeType type, pid_t* enterPid);
-    string cmdToString(const char* cmdLine){
-        if (!cmdLine)
-            return "";
-        string newCmd = "";
-        for ( int i = 0; cmdLine[i] != '\0'; i++){
-            if(cmdLine[i] == '>'){
-                if(cmdLine[i+1] == '>'){
-                    newCmd.append(" >> ");
-                    i++;
-                }else{
-                    newCmd.append(" > ");
-                }
-            }else if(cmdLine[i] == '|'){
-                if(cmdLine[i+1] == '&'){
-                    newCmd += " |& ";
-                    i++;
-                }else{
-                    newCmd += " | ";
-                }
-            }else{
-                newCmd += cmdLine[i];
-            }
-        }
-        return newCmd;
-    }
+    string cmdToString(const char* cmdLine);
 };
 
 

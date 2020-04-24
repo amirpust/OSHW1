@@ -61,7 +61,7 @@ KillCommand::KillCommand(string &originalCommandLine, string *args, int size) :
     if(size != 3)
         throw invalidArgs(splitLine[0].c_str());
     try {
-        sig = stoi(splitLine[1],nullptr);
+        sig =  stoi(splitLine[1],nullptr);
         jobId = stoi(splitLine[2], nullptr);
 
     }catch(exception& e){
