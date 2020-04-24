@@ -9,10 +9,16 @@ JobsList::JobsList() : maxId(0), jobs(), fg(nullptr) {}
 void JobsList::addJob(const string& originalCmd, pid_t pid, const string &path,
                  bool onBg) {
     update();
-    jobs.emplace_back(originalCmd, ++maxId, pid, path);
+    int newId = ++maxId;
+    jobs.emplace_back(originalCmd, newId, pid, path);
 
-    if(!onBg)
-        bringFG(maxId);
+    if(!onBg){
+        try{
+            bringFG(newId);
+        }catch(exception& e){
+
+        }
+    }
 }
 
 
