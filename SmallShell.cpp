@@ -223,9 +223,6 @@ void SmallShell::prepareIO(redirectionType type, const string& path) {
     if(type == noRedirect)
         return;
 
-    PRINT_PARAM(path.size());
-    PRINT_PARAM(path);
-
     if (close(1) == CLOSE_ERR)
         throw closeError();
 

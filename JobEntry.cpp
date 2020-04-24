@@ -25,7 +25,7 @@ void JobEntry::updateStatus() {
         }else if(WIFCONTINUED(newStatus)){
             startTime = time(nullptr);
             status = RUN;
-        }else if(WIFEXITED(newStatus) || WTERMSIG(newStatus)){
+        }else if(WIFEXITED(newStatus) || WIFSIGNALED(newStatus)){
             status = END;
         }else{
             status = RUN;
@@ -66,7 +66,7 @@ void JobEntry::stopCmd() {
 
     if (kill(pid, SIGSTOP) == KILL_ERR)
         throw killError();
-    updateStatus();
+    //updateStatus();
 }
 
 void JobEntry::continueCmd() {
@@ -75,7 +75,8 @@ void JobEntry::continueCmd() {
         return;*/
 
     if(kill(pid, SIGCONT) == KILL_ERR)
-    updateStatus();
+        throw killError();
+    //updateStatus();
 }
 
 void JobEntry::killCmd() {
@@ -85,7 +86,11 @@ void JobEntry::killCmd() {
 
     if(kill(pid, SIGKILL) == KILL_ERR)
         throw killError();
-    updateStatus();
+
+    int p = waitpid(pid, NULL, 0);
+    status = END;
+
+    //updateStatus();
 }
 
 JobEntry::JobEntry(const JobEntry &toCopy) : originalcmd(toCopy.originalcmd) , status(toCopy.status), startTime(toCopy.startTime), stopTime(toCopy.stopTime),

@@ -34,7 +34,7 @@ void JobsList::printJobsList() {
 }
 
 void JobsList::killAllJobs() {
-    for(auto i : jobs) {
+    for(JobEntry& i : jobs) {
         killJob(i);
     }
     update();
@@ -122,7 +122,7 @@ void JobsList::removeFinishedJobs() {
     for(JobEntry& i : jobs){
         i.updateStatus();
         if(i.getStatus() != END)
-            temp.push_back(i); //TODO: check if push_back really duplicate
+            temp.push_back(i);
     }
 
     jobs.clear();
