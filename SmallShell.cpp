@@ -154,7 +154,8 @@ const string &SmallShell::getName() const {
     return name;
 }
 
-SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash"), name(defaultName),previousDir(""){
+SmallShell::SmallShell() : jobs(JobsList::getInstance()), defaultName("smash")
+, name(defaultName),previousDir(""), running(true){
     char* temp = get_current_dir_name();
     if(temp == GET_CURR_DIR_ERR)
         throw getCurrentDirError();
@@ -312,4 +313,12 @@ void SmallShell::removeRedirection(string &cmd) {
         return;
 
     cmd[index] = '\0';
+}
+
+bool SmallShell::isRunning() const {
+    return running;
+}
+
+void SmallShell::setRunning(bool running) {
+    SmallShell::running = running;
 }

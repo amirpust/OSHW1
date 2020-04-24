@@ -1,33 +1,43 @@
 #include <iostream>
 #include <sstream>
 #include <errno.h>
-const std::string WHITESPACE = " \n\r\t\f\v";
+
 using namespace std;
-bool isBackground(string& cmd){
-    return cmd[cmd.find_last_not_of(WHITESPACE)] == '&';
+
+struct node_t{
+int val;
+node_t* next;
+};
+
+
+
+typedef node_t* Node;
+
+void swap(Node* prevSrcNext,Node* prevDstNext){
+    Node pointToNextSrc = *prevSrcNext;
+    Node pointToNextDst = *prevDstNext;
+    Node srcNext = (*prevSrcNext)->next;
+    Node dstNext = (*prevDstNext)->next;
+
+    *prevDstNext = pointToNextSrc;
+    *prevSrcNext = pointToNextDst;
+
 }
 
-void removeBackgroundSign(string& cmd){
-    int index = cmd.find_last_not_of(WHITESPACE);
-    if(cmd[index] != '&')
-        return;
+void findSrcDst(Node list,int src, int dst ){
+    Node srcPrev = NULL;
+    Node dstPrev = NULL;
+    Node iter = list;
+    while(iter != NULL){
 
-    cmd[index] = '\0';
+        if(src == iter->val){
+            putPrev(srcPrev);
+        }else if(dst == iter->val)
+            putPrev(dstPrev);
 
-}
-
-int parseCommand(const string& cmd,string* splitCmd){
-
-    int i = 0;
-    istringstream iss(cmd);
-    string str;
-    while(getline(iss,str,' ')){
-        splitCmd[++i] = string(str);
+        iter = iter->next;
     }
-    return i;
 }
-
-extern int errno;
 
 int main() {
 

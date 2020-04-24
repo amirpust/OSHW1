@@ -22,6 +22,7 @@ class SmallShell {
     fileDescriptor stdIn;
     fileDescriptor stdOut;
     fileDescriptor stdErr;
+    bool running;
 
 public:
 
@@ -37,6 +38,10 @@ public:
     void cd(const string& str);
     pid_t getMyPid() const;
     void cleanUpIO(pid_t pipePid);
+
+    bool isRunning() const;
+
+    void setRunning(bool running);
 
 private:
 

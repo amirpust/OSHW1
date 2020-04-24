@@ -145,6 +145,6 @@ void QuitCommand::execute() {
              std::to_string(JobsList::getInstance().getSize()) << " jobs:" << endl;
         JobsList::getInstance().killAllJobs();
     }
-    if(kill(SmallShell::getInstance().getMyPid(), SIGKILL) == KILL_ERR)
-        throw killError();
+
+    SmallShell::getInstance().setRunning(false);
 }
