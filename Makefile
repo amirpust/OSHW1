@@ -1,9 +1,13 @@
+SUBMITTERS := 316397843_203304480
 CC = g++
 OBJS = BuiltInCommand.o Command.o ExternalCommand.o JobEntry.o JobsList.o \
 Signals.o SmallShell.o Smash.o
-EXEC = smash
+SMASH_BIN = smash
 COMP_FLAGS = --std=c++11 -Wall
-$(EXEC) : $(OBJS)
+TESTS_INPUTS := $(wildcard test_input*.txt)
+TESTS_OUTPUTS := $(subst input,output,$(TESTS_INPUTS))
+
+$(SMASH_BIN) : $(OBJS)
 	$(CC) $(OBJS) -o $@
 BuiltInCommand.o:BuiltInCommand.cpp BuiltInCommand.h Libs.h Debugger.h \
 	SysCallException.h Command.h CommandExceptions.h JobsList.h JobEntry.h \
@@ -34,7 +38,25 @@ Smash.o:Smash.cpp Libs.h Debugger.h SysCallException.h SmallShell.h \
 	Signals.h
 
 run:
-	./$(EXEC)
+	./$(SMASH_BIN)
 
 clean:
-	rm -rf $(OBJS) $(EXEC)
+	rm -rf $(OBJS) $(SMASH_BIN)
+	rm -rf $(SUBMITTERS).zip
+	
+test: $(TESTS_OUTPUTS)
+
+$(TESTS_OUTPUTS): $(SMASH_BIN)
+$(TESTS_OUTPUTS): test_output%.txt: test_input%.txt test_expected_output%.txt
+	./$(SMASH_BIN) < $(word 1, $^) > $@
+	diff $@ $(word 2, $^)
+	echo $(word 1, $^) ++PASSED++
+
+$(SMASH_BIN): $(OBJS)
+	$(COMPILER) $(COMPILER_FLAGS) $^ -o $@
+
+$(OBJS): %.o: %.cpp
+	$(COMPILER) $(COMPILER_FLAGS) -c $^
+	
+zip: $(OBJS)
+	zip $(SUBMITTERS).zip $^ submitters.txt Makefile
