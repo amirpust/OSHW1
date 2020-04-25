@@ -6,11 +6,10 @@
 
 JobsList::JobsList() : maxId(0), jobs(), fg(nullptr) {}
 
-void JobsList::addJob(const string& originalCmd, pid_t pid, const string &path,
-                 bool onBg) {
+void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pid2) {
     update();
     int newId = ++maxId;
-    jobs.emplace_back(originalCmd, newId, pid, path);
+    jobs.emplace_back(originalCmd, newId, pid, pid2);
 
     if(!onBg){
         try{
@@ -33,7 +32,7 @@ void JobsList::printJobsList() {
         cout << "[" << i.getJobId() << "] " << i.print();
         cout << " : " << i.getPid() << " ";
         cout << i.getTime() <<" secs";
-        if(i.getStatus() != RUN)
+        if(i.getStatus() == STOP || i.getStatus2() == STOP)
             cout << " (stopped)";
         cout << endl;
     }
@@ -72,16 +71,17 @@ void JobsList::sendSigById(int sig, int jobId) {
     }else{
         if(kill(job->getPid(),sig) == KILL_ERR)
             throw killError();
+        if(kill(job->getPid2(),sig) == KILL_ERR)
+            throw killError();
     }
 }
 
 void JobsList::bringFG(int jobId) {
-    assert((fg == nullptr));
+    assert(fg == nullptr);
 
     fg = &getJobById(jobId);
 
-    if(fg->getStatus() == STOP)
-        fg->continueCmd();
+    fg->continueCmd();
 
     update();
 }
@@ -92,7 +92,7 @@ void JobsList::resumeOnBG(int jobId) {
         getLastStoppedJob().continueCmd();
     }else{
         JobEntry& job = getJobById(jobId);
-        if (job.getStatus() == RUN)
+        if (job.getStatus() != STOP || job.getStatus2() != STOP)
             throw inBG();
 
         job.continueCmd();
@@ -115,7 +115,7 @@ void JobsList::runFG() {
 
     do {
         fg->updateStatus();
-    } while (fg->getStatus() == RUN);
+    } while (fg->getStatus() == RUN || fg->getStatus2() == RUN);
 
     fg = nullptr;
 }
@@ -127,7 +127,7 @@ void JobsList::removeFinishedJobs() {
     vector<JobEntry> temp;
     for(JobEntry& i : jobs){
         i.updateStatus();
-        if(i.getStatus() != END)
+        if(i.getStatus() != END || i.getStatus2() != END)
             temp.push_back(i);
     }
 
@@ -167,7 +167,7 @@ JobEntry &JobsList::getLastStoppedJob() {
 
     JobEntry* lastStopped = NULL;
     for(JobEntry& i : jobs){
-        if (i.getStatus() == STOP)
+        if (i.getStatus() == STOP || i.getStatus2() == STOP)
             lastStopped = &i;
     }
 

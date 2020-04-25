@@ -29,7 +29,7 @@ public:
     SmallShell(SmallShell const&)      = delete; // disable copy ctor
     void operator=(SmallShell const&)  = delete; // disable = operator
     static SmallShell& getInstance();
-    ~SmallShell();;
+    ~SmallShell();
     void executeCommand(const char* cmd_line);
     Command* createCommand(string& original,string& cmdLine,string* splitCmd, int size);
     void setName(const string& newName);
@@ -37,7 +37,7 @@ public:
     const string &getPreviousDir() const;
     void cd(const string& str);
     pid_t getMyPid() const;
-    void cleanUpIO(pid_t pipePid);
+    void cleanUpIO();
 
     bool isRunning() const;
 
@@ -53,8 +53,8 @@ private:
     void removeRedirection(string& cmd);
     redirectionType identifyRedirection(string* splitCmd, int size, string* path);
     void prepareIO(redirectionType type, const string& path);
-    int checkPipe(string split[], int size, pid_t* enterPid);
-    void splitPipe(pipeType type, pid_t* enterPid);
+    int checkPipe(string split[], int size, pid_t *leftPid, pid_t *rightPid);
+    void splitPipe(pipeType type, pid_t *leftPid, pid_t *rightPid);
     string cmdToString(const char* cmdLine);
 };
 

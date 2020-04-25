@@ -15,15 +15,19 @@ void SmallShell::executeCommand(const char *cmd_line) {
     string splitCmd[COMMAND_MAX_ARGS];
     string path;
     int size = 0;
-    pid_t pipePid = -1;
+    pid_t pipeLeft = -1;
+    pid_t pipeRight = -1;
 
     cmdDecryptor(original, &cmdStr, splitCmd, &size, &bg);
 
-    int index = checkPipe(splitCmd, size, &pipePid);
+    int index = checkPipe(splitCmd, size, &pipeLeft, &pipeRight);
     if (index >= 0) {
-        if (pipePid == 0) {
+        if (pipeLeft > 0 && pipeRight > 0) { //father
+            jobs.addJob(original, bg, pipeLeft, pipeRight); //TODO
+            return;
+        }else if(pipeLeft == 0){            //left son
             size = index;
-        } else {
+        } else {                            //right son
             size -= (index + 1);
             for (int i = 0; i < size; i++)
                 splitCmd[i] = splitCmd[i + index + 1];
@@ -54,7 +58,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             copyCommand.execute();
             exit(-1);
         }else{
-            jobs.addJob(copyCommand.print(), childPid, "./", bg);
+            jobs.addJob(copyCommand.print(), bg, childPid);
         }
     }else {
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
@@ -70,10 +74,9 @@ void SmallShell::executeCommand(const char *cmd_line) {
             externalCommand.execute();
             exit(-1);
         } else {
-            jobs.addJob(externalCommand.print(), childPid, "./", bg);
+            jobs.addJob(externalCommand.print(), bg, childPid);
         }
     }
-    cleanUpIO(pipePid);
 }
 
 void SmallShell::setName(const string &newName) {
@@ -236,16 +239,7 @@ void SmallShell::prepareIO(redirectionType type, const string& path) {
     }
 }
 
-void SmallShell::cleanUpIO(pid_t pipePid) {
-    if(pipePid == 0)
-        exit(0);
-    if(pipePid > 0){
-        int status;
-        if ( waitpid(pipePid, &status, 0) == WAIT_PID_ERR)
-            throw waitpidError();
-    }
-
-
+void SmallShell::cleanUpIO() {
     close(0);
     close(1);
     close(2);
@@ -255,32 +249,32 @@ void SmallShell::cleanUpIO(pid_t pipePid) {
     dup(stdErr);
 }
 
-int SmallShell::checkPipe(string *split, int size, pid_t *enterPid) {
+int SmallShell::checkPipe(string *split, int size, pid_t *leftPid, pid_t *rightPid) {
 
     for(int i = 0; i < size; i++){
         if(split[i]  == "|"){
-            splitPipe(pipeRegular, enterPid);
+            splitPipe(pipeRegular, leftPid, rightPid);
             return i;
 
         }else if(split[i] == "|&"){
-            splitPipe(pipeStderr, enterPid);
+            splitPipe(pipeStderr, leftPid, rightPid);
             return i;
         }
     }
     return -1;
 }
 
-void SmallShell::splitPipe(pipeType type, pid_t *enterPid) {
+void SmallShell::splitPipe(pipeType type, pid_t *leftPid, pid_t *rightPid) {
     fileDescriptor pipeFD[2];
     if (pipe(pipeFD) == PIPE_ERR)
        throw pipeError();
 
-    (*enterPid) = fork();
-
-    if((*enterPid) == FORK_ERR)
+    (*leftPid) = fork();
+    if((*leftPid) == FORK_ERR)
         throw forkError();
 
-    if ((*enterPid) == 0){                               //Enter (write to pipe)
+    if((*leftPid) == 0){        //Left son
+        (*rightPid) = -1;
         if(type == pipeRegular){
             if (close(1) == CLOSE_ERR)
                 throw closeError();
@@ -291,14 +285,32 @@ void SmallShell::splitPipe(pipeType type, pid_t *enterPid) {
         if ( dup(pipeFD[1]) == DUP_ERR)
             throw dupError();
 
+        if(close(pipeFD[0]) == CLOSE_ERR || close(pipeFD[1]) == CLOSE_ERR)
+            throw closeError();
 
+        return;
+    }
 
-    }else{                                              //Exit (read from pipe)
+    (*rightPid) = fork();
+    if((*rightPid) == FORK_ERR)
+        throw forkError();
+
+    if((*rightPid) == 0){        //Right son
+        (*leftPid) = -1;
         if( close(0) == CLOSE_ERR)
             throw closeError();
         if( dup(pipeFD[0]) == DUP_ERR)
             throw dupError();
+
+        if(close(pipeFD[0]) == CLOSE_ERR || close(pipeFD[1]) == CLOSE_ERR)
+            throw closeError();
+
+        return;
     }
+
+    //Father
+    if(close(pipeFD[0]) == CLOSE_ERR || close(pipeFD[1]) == CLOSE_ERR)
+        throw closeError();
 }
 
 SmallShell::~SmallShell() {

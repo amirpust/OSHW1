@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     SmallShell& smash = SmallShell::getInstance();
 
 
-    while(smash.isRunning()) {
+    while(smash.isRunning() && getpid() == smash.getMyPid()) {
         std::cout << smash.getName() << "> ";
         std::string cmd_line;
         std::getline(std::cin, cmd_line);
@@ -31,9 +31,7 @@ int main(int argc, char* argv[]) {
         }catch (SysCallException& e){
             std::cerr <<"smash error: " << e.printDebug() << " failed" << endl;
         }
-        smash.cleanUpIO(-1);
-        if (getpid() != smash.getMyPid())
-            return 0;
+        smash.cleanUpIO();
     }
     return 0;
 }
