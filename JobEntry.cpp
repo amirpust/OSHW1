@@ -123,7 +123,7 @@ void JobEntry::killCmd() {
     }
 }
 
-JobEntry::JobEntry(const JobEntry &toCopy) : originalcmd(toCopy.originalcmd) , status(toCopy.status), startTime(toCopy.startTime), stopTime(toCopy.stopTime),
+JobEntry::JobEntry(const JobEntry &toCopy) : originalcmd(toCopy.originalcmd) , status(toCopy.status),status2(toCopy.status2), startTime(toCopy.startTime), stopTime(toCopy.stopTime),
                                              jobId(toCopy.jobId), pid(toCopy.pid), pid2(toCopy.pid2){}
 
 pid_t JobEntry::getPid2() const {

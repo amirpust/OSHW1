@@ -81,7 +81,7 @@ public:
     emptyListBG(const char* cmd):commandException(cmd){};
 
     string print() const override {
-        return " error: " + string(cmd) + ": "
+        return " error: " + string(cmd) + ":"
                + " there is no stopped jobs to resume";
     }
 };

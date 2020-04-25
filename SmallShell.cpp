@@ -34,12 +34,10 @@ void SmallShell::executeCommand(const char *cmd_line) {
         }
     }
 
-
     redirectionType io = identifyRedirection(splitCmd, size, &path);
     removeRedirection(cmdStr);
     prepareIO(io, path);
     Command *cmd = createCommand(original, cmdStr, splitCmd, size);
-
 
     if (cmd->getType() == builtIn) {
         cmd->execute();
@@ -74,7 +72,6 @@ void SmallShell::executeCommand(const char *cmd_line) {
             externalCommand.execute();
             exit(-1);
         }
-
         pid_t childPid = fork();
         if(childPid == FORK_ERR)
             throw forkError();
