@@ -123,10 +123,11 @@ BgCommand::BgCommand(string &originalCommandLine, string *args, int size) :
     else{
         try {
 
-            size_t index;
-            jobId = stoi(args[1], &index);
-
-            if(index < args[1].size())
+            size_t index = 0;
+            jobId = stoi(splitLine[1], &index);
+            PRINT_PARAM(index);
+            PRINT_PARAM(splitLine[1].size());
+            if(int(index) < splitLine[1].size())
                 invalidArgs(splitLine[0].c_str());
         }catch(exception& e){
             throw invalidArgs(splitLine[0].c_str());
