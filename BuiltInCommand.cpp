@@ -94,8 +94,10 @@ FgCommand::FgCommand(string &originalCommandLine, string *args, int size) :
         throw invalidArgs(splitLine[0].c_str());
     }
     try {
-        size_t
-        jobId = stoi(args[1], nullptr);
+        size_t index = 0;
+        jobId = stoi(splitLine[1], &index);
+        if(index < splitLine[1].size())
+            throw invalidArgs(splitLine[0].c_str());
     }catch(exception& e){
         throw invalidArgs(splitLine[0].c_str());
     }
