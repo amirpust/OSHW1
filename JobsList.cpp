@@ -92,7 +92,7 @@ void JobsList::resumeOnBG(int jobId) {
         getLastStoppedJob().continueCmd();
     }else{
         JobEntry& job = getJobById(jobId);
-        if (job.getStatus() != STOP || job.getStatus2() != STOP)
+        if (job.getStatus() != STOP && job.getStatus2() != STOP)
             throw inBG();
 
         job.continueCmd();

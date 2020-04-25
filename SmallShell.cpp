@@ -45,13 +45,19 @@ void SmallShell::executeCommand(const char *cmd_line) {
         cmd->execute();
         delete cmd;
     }else if (cmd->getType() == copyCmd) {
-        pid_t childPid = fork();
-        if (childPid == FORK_ERR){
-            delete cmd;
-            throw forkError();
-        }
         CopyCommand copyCommand(*dynamic_cast<CopyCommand*>(cmd));
         delete cmd;
+
+        if(pipeLeft == 0 || pipeRight == 0){
+            copyCommand.execute();
+            exit(-1);
+        }
+
+        pid_t childPid = fork();
+        if (childPid == FORK_ERR){
+            throw forkError();
+        }
+
         if (childPid == 0) { //Child
             if (setpgrp() == SETPGRP_ERR)
                 throw setpgrpError();
@@ -63,6 +69,12 @@ void SmallShell::executeCommand(const char *cmd_line) {
     }else {
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
         delete cmd;
+
+        if(pipeLeft == 0 || pipeRight == 0){
+            externalCommand.execute();
+            exit(-1);
+        }
+
         pid_t childPid = fork();
         if(childPid == FORK_ERR)
             throw forkError();
@@ -274,6 +286,8 @@ void SmallShell::splitPipe(pipeType type, pid_t *leftPid, pid_t *rightPid) {
         throw forkError();
 
     if((*leftPid) == 0){        //Left son
+        if (setpgrp() == SETPGRP_ERR)
+            throw setpgrpError();
         (*rightPid) = -1;
         if(type == pipeRegular){
             if (close(1) == CLOSE_ERR)
@@ -296,6 +310,8 @@ void SmallShell::splitPipe(pipeType type, pid_t *leftPid, pid_t *rightPid) {
         throw forkError();
 
     if((*rightPid) == 0){        //Right son
+        if (setpgrp() == SETPGRP_ERR)
+            throw setpgrpError();
         (*leftPid) = -1;
         if( close(0) == CLOSE_ERR)
             throw closeError();

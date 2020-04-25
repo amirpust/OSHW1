@@ -103,17 +103,19 @@ void JobEntry::continueCmd() {
         if(kill(pid2, SIGCONT) == KILL_ERR)
             throw killError();
     }
-
+    updateStatus();
 }
 
 void JobEntry::killCmd() {
     if(status != END){
+        assert(pid > 0);
         if(kill(pid, SIGKILL) == KILL_ERR)
             throw killError();
         waitpid(pid, NULL, 0);
         status = END;
     }
     if(status2 != END){
+        assert(pid2 > 0);
         if(kill(pid2, SIGKILL) == KILL_ERR)
             throw killError();
         waitpid(pid2, NULL, 0);
