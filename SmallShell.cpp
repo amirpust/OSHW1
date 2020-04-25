@@ -25,7 +25,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
         if (pipeLeft > 0 && pipeRight > 0) { //father
             jobs.addJob(original, bg, pipeLeft, pipeRight); //TODO
             return;
-        }else if(pipeLeft == 0){            //left son
+        }else if(pipeLeft == 0){    //left son
             size = index;
         } else {                            //right son
             size -= (index + 1);
@@ -37,7 +37,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     redirectionType io = identifyRedirection(splitCmd, size, &path);
     removeRedirection(cmdStr);
     prepareIO(io, path);
-    Command *cmd = createCommand(original, cmdStr, splitCmd, size);
+    Command *cmd = createCommand(splitCmd, size);
 
     if (cmd->getType() == builtIn) {
         cmd->execute();
@@ -62,7 +62,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             copyCommand.execute();
             exit(-1);
         }else{
-            jobs.addJob(copyCommand.print(), bg, childPid);
+            jobs.addJob(original, bg, childPid);
         }
     }else {
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
@@ -83,7 +83,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             externalCommand.execute();
             exit(-1);
         } else {
-            jobs.addJob(externalCommand.print(), bg, childPid);
+            jobs.addJob(original, bg, childPid);
         }
     }
 }
@@ -123,44 +123,43 @@ pid_t SmallShell::getMyPid() const {
     return myPid;
 }
 
-Command* SmallShell::createCommand(string &original, string &cmdLine, string *splitCmd,
-                          int size) {
+Command* SmallShell::createCommand(string *splitCmd,int size) {
     const std::string commands [] = {
             "chprompt", "showpid", "pwd", "cd", "jobs", "kill", "fg",
             "bg", "quit" , "cp"
     };
 
     if (splitCmd[0] == commands[0])
-        return new ChpromptCommand(original,splitCmd,size);
+        return new ChpromptCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[1])
-        return new ShowpidCommand(original,splitCmd,size);
+        return new ShowpidCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[2])
-        return new PwdCommand(original,splitCmd,size);
+        return new PwdCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[3])
-        return new CdCommand(original,splitCmd,size);
+        return new CdCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[4])
-        return new JobsCommand(original,splitCmd,size);
+        return new JobsCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[5])
-        return new KillCommand(original,splitCmd,size);
+        return new KillCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[6])
-        return new FgCommand(original,splitCmd,size);
+        return new FgCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[7])
-        return new BgCommand(original,splitCmd,size);
+        return new BgCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[8])
-        return new QuitCommand(original,splitCmd,size);
+        return new QuitCommand(splitCmd,size);
 
     if (splitCmd[0] == commands[9])
-        return new CopyCommand(original,splitCmd,size);
+        return new CopyCommand(splitCmd,size);
 
-    return new ExternalCommand(cmdLine,original,splitCmd,size);
+    return new ExternalCommand(splitCmd,size);
 }
 
 const string &SmallShell::getName() const {

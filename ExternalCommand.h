@@ -6,13 +6,11 @@
 #include "Command.h"
 
 class ExternalCommand : public Command {
-    string cmd;
 public:
-    ExternalCommand(string& decrypted,string &originalCommandLine, string *args, int size);
+    ExternalCommand(string *args, int size);
    // copy C'tor still having
     ExternalCommand(const ExternalCommand& toCopy):
-            Command(toCopy.originalCommandLine,toCopy.splitLine
-                    ,toCopy.size,external), cmd(toCopy.cmd){};
+            Command(toCopy.splitLine,toCopy.size,external){};
 
     void execute() override;
     virtual  ~ExternalCommand() = default;
@@ -26,7 +24,7 @@ class CopyCommand : public Command{
 
 public:
 
-    CopyCommand(string &originalCommandLine, string *args, int size);
+    CopyCommand(string *args, int size);
 
     CopyCommand(CopyCommand const& toCopy);;
 

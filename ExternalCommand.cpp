@@ -3,30 +3,36 @@
 void ExternalCommand::execute() {
     char bash[10] = "/bin/bash";
     char flag[3] = "-c";
+    string s = "";
+
+    for (int i = 0; i < size; ++i) {
+        s += splitLine[i];
+        s += " ";
+    }
     char cmd[COMMAND_ARGS_MAX_LENGTH + 1];
-    strcpy(cmd,this->cmd.c_str());
-    char* cmd_args[4];
+    strcpy(cmd,s.c_str());
+    char* cmd_args[COMMAND_MAX_ARGS + 4];
     cmd_args[0] = bash;
     cmd_args[1] = flag;
     cmd_args[2] = cmd;
     cmd_args[3] = NULL;
 
-    if(execv("/bin/bash",cmd_args) == EXECV_ERR)
+    if(execv(bash,cmd_args) == EXECV_ERR)
         throw execvError();
 }
 
-ExternalCommand::ExternalCommand(string& decrypted,string &originalCommandLine, string *args, int size) :
-Command(originalCommandLine,args,size,external), cmd(decrypted){}
+ExternalCommand::ExternalCommand(string *args, int size) :
+Command(args,size,external){}
 
-CopyCommand::CopyCommand(string &originalCommandLine, string *args, int size)
-        : Command(originalCommandLine, args, size, copyCmd){
+CopyCommand::CopyCommand(string *args, int size)
+        : Command(args, size, copyCmd){
     //TODO: check arguments
     oldFile = splitLine[1];
     newFile = splitLine[2];
 }
 
 CopyCommand::CopyCommand(CopyCommand const &toCopy)
-        :Command(toCopy.originalCommandLine, toCopy.splitLine, toCopy.size, copyCmd){
+        :Command(toCopy.splitLine, toCopy.size, copyCmd){
     oldFile = toCopy.oldFile;
     newFile = toCopy.newFile;
 }
@@ -48,10 +54,11 @@ void CopyCommand::execute() {
         readRet = read(readFD,buf,1);
         if(readRet == READ_ERR)
             throw readError();
-
-        writeRet = write(writeFD,buf,1);
-        if(writeRet == WRITE_ERR)
-            throw writeError();
+        if(readRet > 0){
+            writeRet = write(writeFD,buf,1);
+            if(writeRet == WRITE_ERR)
+                throw writeError();
+        }
     }
     cleanUp();
 }

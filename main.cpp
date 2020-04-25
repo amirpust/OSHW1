@@ -1,45 +1,20 @@
 #include <iostream>
 #include <sstream>
 #include <errno.h>
+#include <cstring>
 
 using namespace std;
 
-struct node_t{
-int val;
-node_t* next;
-};
-
-
-
-typedef node_t* Node;
-
-void swap(Node* prevSrcNext,Node* prevDstNext){
-    Node pointToNextSrc = *prevSrcNext;
-    Node pointToNextDst = *prevDstNext;
-    Node srcNext = (*prevSrcNext)->next;
-    Node dstNext = (*prevDstNext)->next;
-
-    *prevDstNext = pointToNextSrc;
-    *prevSrcNext = pointToNextDst;
-
-}
-
-void findSrcDst(Node list,int src, int dst ){
-    Node srcPrev = NULL;
-    Node dstPrev = NULL;
-    Node iter = list;
-    while(iter != NULL){
-
-        if(src == iter->val){
-            putPrev(srcPrev);
-        }else if(dst == iter->val)
-            putPrev(dstPrev);
-
-        iter = iter->next;
-    }
-}
-
 int main() {
+    char cmdArr[200][200];
+    string a = "amir";
+    string s[3] = {a, "was", "here"};
+    for (int i = 0; i < 3; ++i) {
+        strcpy(cmdArr[i], s[i].c_str());
+    }
 
+    for (int j = 0; j < 3; ++j) {
+        cout << cmdArr[j] << endl;
+    }
     return 0;
 }

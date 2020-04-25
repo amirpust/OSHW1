@@ -31,7 +31,7 @@ public:
     static SmallShell& getInstance();
     ~SmallShell();
     void executeCommand(const char* cmd_line);
-    Command* createCommand(string& original,string& cmdLine,string* splitCmd, int size);
+    Command* createCommand(string* splitCmd, int size);
     void setName(const string& newName);
     const string &getName() const;
     const string &getPreviousDir() const;

@@ -9,42 +9,42 @@
 
 class BuiltInCommand : public Command{
 public:
-    BuiltInCommand(string &originalCommandLine, string *args, int size):
-    Command(originalCommandLine,args,size,builtIn){};
+    BuiltInCommand(string *args, int size):
+    Command(args,size,builtIn){};
     virtual ~BuiltInCommand() = default;
 };
 
 class ChpromptCommand: public BuiltInCommand{
 public:
-    ChpromptCommand(string &originalCommandLine, string *args, int size);;
+    ChpromptCommand(string *args, int size);;
 
     void execute() override;
 };
 
 class ShowpidCommand : public BuiltInCommand{
 public:
-    ShowpidCommand(string &originalCommandLine, string *args, int size);;
+    ShowpidCommand(string *args, int size);;
 
     void execute() override;
 };
 
 class PwdCommand : public BuiltInCommand{
 public:
-    PwdCommand(string &originalCommandLine, string *args, int size);;
+    PwdCommand(string *args, int size);;
 
     void execute() override;
 };
 
 class CdCommand : public BuiltInCommand{
 public:
-    CdCommand(string &originalCommandLine, string *args, int size);
+    CdCommand(string *args, int size);
 
     void execute() override;
 };
 
 class JobsCommand: public BuiltInCommand{
 public:
-    JobsCommand(string &originalCommandLine, string *args, int size);
+    JobsCommand(string *args, int size);
 
     void execute() override;
 };
@@ -53,7 +53,7 @@ class KillCommand : public BuiltInCommand{
     int sig;
     int jobId;
 public:
-    KillCommand(string &originalCommandLine, string *args, int size);
+    KillCommand(string *args, int size);
 
     void execute() override;
 };
@@ -62,7 +62,7 @@ public:
 class FgCommand : public BuiltInCommand{
     int jobId;
 public:
-    FgCommand(string &originalCommandLine, string *args, int size);;
+    FgCommand(string *args, int size);;
     void execute() override;
 
 };
@@ -70,7 +70,7 @@ public:
 class BgCommand : public  BuiltInCommand{
     int jobId;
 public:
-    BgCommand(string &originalCommandLine, string *args, int size);
+    BgCommand(string *args, int size);
 
     void execute() override;
 };
@@ -78,7 +78,7 @@ public:
 
 class QuitCommand : public BuiltInCommand{
 public:
-    QuitCommand(string &originalCommandLine, string *args, int size);
+    QuitCommand(string *args, int size);
     void execute() override;
 };
 
