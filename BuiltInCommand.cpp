@@ -67,7 +67,7 @@ KillCommand::KillCommand(string &originalCommandLine, string *args, int size) :
         sig =  stoi(splitLine[1], &indexSig);
         jobId = stoi(splitLine[2], &indexJobId);
 
-        if(indexJobId < splitLine[2].size() || indexSig < splitLine[1].size())
+        if(indexJobId < splitLine[2].size() || indexSig < splitLine[1].size() || jobId <= 0)
             throw invalidArgs(splitLine[0].c_str());
     }catch(exception& e){
         throw invalidArgs(splitLine[0].c_str());
