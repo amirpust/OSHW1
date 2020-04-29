@@ -16,13 +16,14 @@ public:
     static JobsList& getInstance();
 
     ~JobsList() = default;
-    void addJob(const string& originalCmd, bool onBg, pid_t pid, pid_t pid2 = -1);
+    void addJob(const string& originalCmd, bool onBg, pid_t pid, pid_t pid2 = -1, time_t* endTime = nullptr);
     void printJobsList();
     void killAllJobs();
     int getSize();
     void sendSigById(int sig, int jobId = 0);
     void bringFG(int jobId);
     void resumeOnBG(int jobId = 0);
+    void checkTimeOut();
     pid_t fgPid();
 
 private:
