@@ -40,7 +40,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
         alarm(duration); //TODO if duration is 0
         size -= TIMEOUT_ARGS;
         for (int i = 0; i < size; ++i) {
-            splitCmd[i] = splitCmd[i + TIMEOUT_ARGS + 1];
+            splitCmd[i] = splitCmd[i + TIMEOUT_ARGS];
         }
     }
 
