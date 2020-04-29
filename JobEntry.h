@@ -17,10 +17,11 @@ class JobEntry {
     int jobId;
     pid_t pid;
     pid_t pid2;
+    time_t timeOut;
 
 public:
 
-    JobEntry(const string& originalCmd, int _jobId, pid_t _p, pid_t _pid2 = -1);
+    JobEntry(const string& originalCmd, int _jobId, pid_t _p, pid_t _pid2 = -1, time_t _timeOut = 0);
     JobEntry(const JobEntry& toCopy);
     void updateStatus(bool inFG = false);
     cmdStatus getStatus() const;

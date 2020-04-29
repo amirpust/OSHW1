@@ -4,8 +4,8 @@
 
 #include "JobEntry.h"
 
-JobEntry::JobEntry (const string& _originalCmd, int _jobId, const pid_t _p, const pid_t _pid2) :
-       originalcmd(string(_originalCmd)), status(RUN), status2(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), pid2(_pid2){
+JobEntry::JobEntry (const string& _originalCmd, int _jobId, const pid_t _p, const pid_t _pid2, time_t _timeOut) :
+       originalcmd(string(_originalCmd)), status(RUN), status2(RUN), startTime(time(nullptr)), jobId(_jobId),pid(_p), pid2(_pid2), timeOut(time(&_timeOut)){
     if(pid2 == -1)
         status2 = END;
 }
@@ -135,7 +135,7 @@ void JobEntry::killCmd() {
 }
 
 JobEntry::JobEntry(const JobEntry &toCopy) : originalcmd(toCopy.originalcmd) , status(toCopy.status),status2(toCopy.status2), startTime(toCopy.startTime), stopTime(toCopy.stopTime),
-                                             jobId(toCopy.jobId), pid(toCopy.pid), pid2(toCopy.pid2){}
+                                             jobId(toCopy.jobId), pid(toCopy.pid), pid2(toCopy.pid2), timeOut(toCopy.timeOut){} //TODO
 
 pid_t JobEntry::getPid2() const {
     return pid2;

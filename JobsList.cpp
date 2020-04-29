@@ -6,10 +6,10 @@
 
 JobsList::JobsList() : maxId(0), jobs(), fg(nullptr) {}
 
-void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pid2) {
+void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pid2, time_t endTime) {
     update();
     int newId = ++maxId;
-    jobs.emplace_back(originalCmd, newId, pid, pid2);
+    jobs.emplace_back(originalCmd, newId, pid, pid2, endTime);
 
     if(!onBg){
         try{
