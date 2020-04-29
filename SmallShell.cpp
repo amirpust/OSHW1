@@ -88,7 +88,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             copyCommand.execute();
             exit(-1);
         }else{
-            jobs.addJob(original, bg, childPid,finishTime);
+            jobs.addJob(original, bg, childPid,-1,finishTime);
         }
     }else {
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
@@ -109,7 +109,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             externalCommand.execute();
             exit(-1);
         } else {
-            jobs.addJob(original, bg, childPid,finishTime);
+            jobs.addJob(original, bg, childPid, -1, finishTime);
         }
     }
 }
