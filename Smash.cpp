@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
         }catch(commandException& e) {
             std::cout << "smash" << e.print() << endl;
         }catch (SysCallException& e){
-            std::cerr <<"smash error: " << e.printDebug() << " failed" << endl;
+            std::cerr <<"smash error: " << e.print() << " failed" << endl;
         }
         smash.cleanUpIO();
     }

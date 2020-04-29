@@ -74,6 +74,8 @@ void JobsList::sendSigById(int sig, int jobId) {
         if(kill(job->getPid2(),sig) == KILL_ERR)
             throw killError();
     }
+
+    update(false);
 }
 
 void JobsList::bringFG(int jobId) {
@@ -99,8 +101,10 @@ void JobsList::resumeOnBG(int jobId) {
     }
 }
 
-void JobsList::update() {
-    runFG();
+void JobsList::update(bool runInFg) {
+    if(runInFg)
+        runFG();
+
     removeFinishedJobs();
 
     if(jobs.empty())
@@ -113,10 +117,8 @@ void JobsList::runFG() {
     if (!fg)
         return;
 
-    do {
-        fg->updateStatus();
-    } while (fg->getStatus() == RUN || fg->getStatus2() == RUN);
-
+    fg->updateStatus(true);
+    assert(fg->getStatus() != RUN);
     fg = nullptr;
 }
 

@@ -11,13 +11,19 @@ JobEntry::JobEntry (const string& _originalCmd, int _jobId, const pid_t _p, cons
 }
 
 
-void JobEntry::updateStatus() {
+void JobEntry::updateStatus(bool inFG) {
     int newStatus = 0;
+    pid_t p;
     if(status != END){
-        pid_t p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
-        if (p == WAIT_PID_ERR)
-            throw waitpidError();
+        if(inFG)
+            p = waitpid(pid, &newStatus, WUNTRACED | WCONTINUED);
+        else
+            p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
 
+        /*
+        if (p == WAIT_PID_ERR)
+            throw waitpidError( __FUNCTION__, __LINE__);
+        */
         if( p != 0){
             if(WIFSTOPPED(newStatus)){
                 stopTime = time(nullptr);
@@ -34,10 +40,15 @@ void JobEntry::updateStatus() {
     }
 
     if(status2 != END ){
-        pid_t p = waitpid(pid2, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
-        if (p == WAIT_PID_ERR)
-            throw waitpidError();
+        if(inFG)
+            p = waitpid(pid2, &newStatus, WUNTRACED | WCONTINUED);
+        else
+            p = waitpid(pid2, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
 
+        /*
+        if (p == WAIT_PID_ERR)
+            throw waitpidError(__FUNCTION__, __LINE__);
+        */
         if( p != 0){
             if(WIFSTOPPED(newStatus)){
                 stopTime = time(nullptr);

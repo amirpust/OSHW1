@@ -125,6 +125,8 @@ public:
 #define WAIT_PID_ERR -1
 class waitpidError : public SysCallException{
 public:
+    waitpidError(const char* _func = "", int _line = -1) : SysCallException(_func,_line) {}
+
     string print() override {
         return "waitpid";
     }

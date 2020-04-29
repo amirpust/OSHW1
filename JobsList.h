@@ -27,7 +27,7 @@ public:
 
 private:
 
-    void update();
+    void update(bool runInFg = true);
     void runFG();
     void removeFinishedJobs();
     void printKilledCommand(JobEntry& job);

@@ -22,7 +22,7 @@ public:
 
     JobEntry(const string& originalCmd, int _jobId, pid_t _p, pid_t _pid2 = -1);
     JobEntry(const JobEntry& toCopy);
-    void updateStatus();
+    void updateStatus(bool inFG = false);
     cmdStatus getStatus() const;
     cmdStatus getStatus2() const;
     int getJobId() const;
