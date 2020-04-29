@@ -190,3 +190,15 @@ pid_t JobsList::fgPid() {
         return -1;
     return fg->getPid();
 }
+
+void JobsList::checkTimeOut() {
+    time_t current = time(nullptr);
+    for(JobEntry& i : jobs) {
+        if (i.getTime() > 0 && difftime(current, i.getTime()) >= 0) { // current-timeout
+            cout << "smash: " << i.print() << "!" << endl;
+            i.killCmd();
+            update(false);
+            return;
+        }
+    }
+}

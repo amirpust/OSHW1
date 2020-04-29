@@ -141,4 +141,8 @@ pid_t JobEntry::getPid2() const {
     return pid2;
 }
 
+time_t JobEntry::getTimeOut() const {
+    return timeOut;
+}
+
 

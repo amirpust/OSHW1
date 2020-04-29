@@ -30,7 +30,7 @@ public:
     pid_t getPid() const;
     time_t getTime() const;
     const string& print() const;
-
+    time_t getTimeOut() const;
     pid_t getPid2() const;
 
     void stopCmd();

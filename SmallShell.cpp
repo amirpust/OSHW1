@@ -405,5 +405,3 @@ string SmallShell::cmdToString(const char *cmdLine) {
 bool SmallShell::isTimeout(string* splitCmd) {
     return splitCmd[0] == "timeout";
 }
-
-unsigned int()
