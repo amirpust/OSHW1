@@ -39,6 +39,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     prepareIO(io, path);
     Command *cmd = createCommand(splitCmd, size);
 
+
     if (cmd->getType() == builtIn) {
         cmd->execute();
         delete cmd;
