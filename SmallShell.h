@@ -49,6 +49,7 @@ private:
     void cmdDecryptor(const string& original,string* cmd,string* splitCmd,int* size, bool* bg);
     int parseCommand(const string& cmd, string* splitCmd);
     bool isBackground(const string& cmd);
+    bool isTimeout(string* splitCmd);
     void removeBackgroundSign(string& cmd);
     void removeRedirection(string& cmd);
     redirectionType identifyRedirection(string* splitCmd, int size, string* path);

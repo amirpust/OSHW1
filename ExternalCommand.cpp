@@ -79,3 +79,4 @@ void CopyCommand::cleanUp() {
         if(close(writeFD) == CLOSE_ERR)
             throw closeError();
 }
+

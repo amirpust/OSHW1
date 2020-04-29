@@ -1,6 +1,7 @@
 #include "SmallShell.h"
 #include "BuiltInCommand.h"
 
+#define TIMEOUT_ARGS 2
 SmallShell &SmallShell::getInstance() {
     static SmallShell instance; // Guaranteed to be destroyed.
     // Instantiated on first use.
@@ -20,10 +21,33 @@ void SmallShell::executeCommand(const char *cmd_line) {
 
     cmdDecryptor(original, &cmdStr, splitCmd, &size, &bg);
 
+    time_t finishTime = 0;
+    time_t startTime;
+    bool timeout = isTimeout(splitCmd);
+    if(timeout){
+        startTime = time(nullptr);
+        try {
+            size_t index = 0;
+            unsigned int duration = stoul(splitCmd[1], &index); //seconds sent and makes turns it into int
+            if(index < splitCmd[1].size())
+                throw invalidArgs(splitCmd[0].c_str());
+        }catch(exception& e){
+            throw invalidArgs(splitCmd[0].c_str()); //TODO : i dont know if its right to put it here
+        }
+
+        unsigned int duration = stoul(splitCmd[1]);
+        finishTime = startTime + duration;
+        alarm(duration); //TODO if duration is 0
+        size -= TIMEOUT_ARGS;
+        for (int i = 0; i < size; ++i) {
+            splitCmd[i] = splitCmd[i + TIMEOUT_ARGS + 1];
+        }
+    }
+
     int index = checkPipe(splitCmd, size, &pipeLeft, &pipeRight);
     if (index >= 0) {
         if (pipeLeft > 0 && pipeRight > 0) { //father
-            jobs.addJob(original, bg, pipeLeft, pipeRight); //TODO
+            jobs.addJob(original, bg, pipeLeft, pipeRight, finishTime); //TODO
             return;
         }else if(pipeLeft == 0){    //left son
             size = index;
@@ -37,6 +61,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
     redirectionType io = identifyRedirection(splitCmd, size, &path);
     removeRedirection(cmdStr);
     prepareIO(io, path);
+
     Command *cmd = createCommand(splitCmd, size);
 
 
@@ -63,7 +88,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             copyCommand.execute();
             exit(-1);
         }else{
-            jobs.addJob(original, bg, childPid);
+            jobs.addJob(original, bg, childPid,finishTime);
         }
     }else {
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
@@ -84,7 +109,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             externalCommand.execute();
             exit(-1);
         } else {
-            jobs.addJob(original, bg, childPid);
+            jobs.addJob(original, bg, childPid,finishTime);
         }
     }
 }
@@ -376,3 +401,9 @@ string SmallShell::cmdToString(const char *cmdLine) {
     }
     return newCmd;
 }
+
+bool SmallShell::isTimeout(string* splitCmd) {
+    return splitCmd[0] == "timeout";
+}
+
+unsigned int()

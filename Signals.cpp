@@ -25,7 +25,6 @@ void ctrlCHandler(int sig_num) {
 }
 
 void alarmHandler(int sig_num) {
-//    cout << "smash got an alarm" <<  endl;
-//    const char* cmd = SmallShell::getInstance();//TODO: get last command in the shell
-//    cout << "smash: " + cmd + "timed out!"<< endl;
+    cout << "smash: got an alarm" << endl;
+    JobsList::getInstance().checkTimeOut();
 }

@@ -34,4 +34,6 @@ private:
     void prepare();
     void cleanUp();
 };
+
+
 #endif //OSHW1_EXTERNALCOMMAND_H
