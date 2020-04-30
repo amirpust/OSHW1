@@ -60,6 +60,8 @@ void CopyCommand::execute() {
                 throw writeError();
         }
     }
+
+    cout << "smash: " + oldFile + " was copied to " + newFile << endl; // this should be printed but i forgot it
     cleanUp();
 }
 

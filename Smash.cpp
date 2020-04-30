@@ -27,9 +27,10 @@ int main(int argc, char* argv[]) {
         try{
             smash.executeCommand(cmd_line.c_str());
         }catch(commandException& e) {
-            std::cout << "smash" << e.print() << endl;
+            std::cerr << "smash" << e.print() << endl; //from the forum it says to print it to cerr not cout
         }catch (SysCallException& e){
-            std::cerr <<"smash error: " << e.print() << " failed" << endl;
+            string massage = "smash error: " + e.print() + " failed";
+            perror(massage.c_str()); // perror adds additional information to the syscall errors like file not found
         }
         smash.cleanUpIO();
     }

@@ -36,7 +36,7 @@ class tooManyArgs : public commandException{
 public:
     explicit tooManyArgs(const char* cmd): commandException(cmd){};
     string print() const override {
-        return  " error: " + string(cmd) + ":  too many arguments";
+        return  " error: " + string(cmd) + ": too many arguments";
     }
 };
 
@@ -45,7 +45,7 @@ public:
     explicit emptyDirHistory(const char* cmd) : commandException(cmd){};
 protected:
     string print() const override {
-        return " error: " + string(cmd) + ":  OLDPWD not set";
+        return " error: " + string(cmd) + ": OLDPWD not set";
     }
 };
 

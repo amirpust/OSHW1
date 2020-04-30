@@ -29,6 +29,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
         try {
             size_t index = 0;
             unsigned int duration = stoul(splitCmd[1], &index); //seconds sent and makes turns it into int
+
             if(index < splitCmd[1].size())
                 throw invalidArgs(splitCmd[0].c_str());
         }catch(exception& e){
@@ -133,13 +134,14 @@ void SmallShell::cd(const string &str) {
         currentDir = previousDir;
         previousDir = temp;
     }else{
-        previousDir = currentDir;
-        if(chdir(str.c_str()) == CHDIR_ERR)
+        if(chdir(str.c_str()) == CHDIR_ERR) {
             throw chdirError();
+        }
         char* temp = get_current_dir_name();
-        if(temp == GET_CURR_DIR_ERR)
+        if(temp == GET_CURR_DIR_ERR) {
             throw getCurrentDirError();
-
+        }
+        previousDir = currentDir;
         currentDir = string(temp);
         free(temp);
     }
