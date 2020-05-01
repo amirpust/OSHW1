@@ -13,7 +13,8 @@ void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pi
 
     if(!onBg){
         try{
-            bringFG(newId);
+            fg = &jobs.back();
+            update();
         }catch(exception& e){
 
         }
