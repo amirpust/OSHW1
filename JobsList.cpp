@@ -122,7 +122,11 @@ void JobsList::update(bool runInFg) {
     if(runInFg)
         runFG();
 
+
     removeFinishedJobs();
+
+    if(fg && fg->getStatus() != RUN)
+        fg = nullptr;
 
     if(jobs.empty())
         maxId = 0;
