@@ -141,6 +141,7 @@ void SmallShell::cd(const string &str) {
         if(temp == GET_CURR_DIR_ERR) {
             throw getCurrentDirError();
         }
+
         previousDir = currentDir;
         currentDir = string(temp);
         free(temp);
