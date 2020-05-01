@@ -15,7 +15,7 @@ void JobEntry::updateStatus(bool inFG) {
     int newStatus = 0;
     pid_t p;
     if(status != END){
-        if(inFG)
+        if(inFG && status != STOP)
             p = waitpid(pid, &newStatus, WUNTRACED | WCONTINUED);
         else
             p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
@@ -40,7 +40,7 @@ void JobEntry::updateStatus(bool inFG) {
     }
 
     if(status2 != END ){
-        if(inFG)
+        if(inFG && status != STOP)
             p = waitpid(pid2, &newStatus, WUNTRACED | WCONTINUED);
         else
             p = waitpid(pid2, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);

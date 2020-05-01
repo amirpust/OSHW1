@@ -14,7 +14,7 @@ void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pi
     if(!onBg){
         try{
             fg = &jobs.back();
-            update();
+            runFG();
         }catch(exception& e){
 
         }
@@ -40,48 +40,57 @@ void JobsList::printJobsList() {
 }
 
 void JobsList::killAllJobs() {
+    update();
+
     for(JobEntry& i : jobs) {
         killJob(i);
     }
-    update();
 }
 
 int JobsList::getSize() {
+    update();
     return jobs.size();
 }
 
-void JobsList::sendSigById(int sig, int jobId) {
-    JobEntry* job;
-    if( jobId == 0){
-        assert(fg != nullptr);
-        if(!fg)
-            return;
-        job = fg;
-
-    }
-    else
-        job = &getJobById(jobId);
-
-
+void JobsList::sendSigToFg(int sig){
+    update();
+    if(!fg)
+        return;
 
     if(sig == SIGKILL){
-        job->killCmd();
+        fg->killCmd();
     }else if (sig == SIGSTOP){
-        job->stopCmd();
-    }else if(sig == SIGCONT){
-        job->continueCmd();
-    }else{
-        if(kill(job->getPid(),sig) == KILL_ERR)
-            throw killError();
-        if(kill(job->getPid2(),sig) == KILL_ERR)
-            throw killError();
+        fg->stopCmd();
     }
 
-    update(false);
+    fg = nullptr;
+}
+
+void JobsList::sendSigById(int sig, int jobId) {
+    update();
+    if( jobId <= 0)
+        return;
+
+    JobEntry& job = getJobById(jobId);
+
+    if(sig == SIGKILL){
+        job.killCmd();
+    }else if (sig == SIGSTOP){
+        job.stopCmd();
+    }else if(sig == SIGCONT){
+        job.continueCmd();
+    }else{
+        if(job.getStatus() != END)
+            if(kill(job.getPid(),sig) == KILL_ERR)
+                throw killError();
+        if(job.getStatus2() != END)
+            if(kill(job.getPid2(),sig) == KILL_ERR)
+                throw killError();
+    }
 }
 
 void JobsList::bringFG(int jobId) {
-    update(false);
+    update();
     assert(fg == nullptr);
 
     if(jobs.empty())
@@ -95,7 +104,7 @@ void JobsList::bringFG(int jobId) {
     fg->continueCmd();
     cout << fg->print() << " : " << fg->getPid() << endl;
 
-    update();
+    runFG();
 }
 
 void JobsList::resumeOnBG(int jobId) {
@@ -118,15 +127,8 @@ void JobsList::resumeOnBG(int jobId) {
     cout << job->print() << " : " << job->getPid() << endl;
 }
 
-void JobsList::update(bool runInFg) {
-    if(runInFg)
-        runFG();
-
-
+void JobsList::update() {
     removeFinishedJobs();
-
-    if(fg && fg->getStatus() != RUN)
-        fg = nullptr;
 
     if(jobs.empty())
         maxId = 0;
@@ -139,7 +141,6 @@ void JobsList::runFG() {
         return;
 
     fg->updateStatus(true);
-    assert(fg->getStatus() != RUN);
     fg = nullptr;
 }
 
@@ -149,6 +150,9 @@ void JobsList::removeFinishedJobs() {
 
     vector<JobEntry> temp;
     for(JobEntry& i : jobs){
+        if(fg && i.getJobId() == fg->getJobId())
+            continue;
+
         i.updateStatus();
         if(i.getStatus() != END || i.getStatus2() != END)
             temp.push_back(i);
@@ -221,7 +225,7 @@ void JobsList::checkTimeOut() {
         if (i.getTime() > 0 && difftime(current, i.getTime()) >= 0) { // current-timeout
             cout << "smash: " << i.print() << "!" << endl;
             i.killCmd();
-            update(false);
+            update();
             return;
         }
     }

@@ -20,6 +20,7 @@ public:
     void printJobsList();
     void killAllJobs();
     int getSize();
+    void sendSigToFg(int sig);
     void sendSigById(int sig, int jobId = 0);
     void bringFG(int jobId = 0);
     void resumeOnBG(int jobId = 0);
@@ -29,7 +30,7 @@ public:
 
 private:
 
-    void update(bool runInFg = true);
+    void update();
     void runFG();
     void removeFinishedJobs();
     void printKilledCommand(JobEntry& job);
