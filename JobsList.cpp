@@ -150,8 +150,10 @@ void JobsList::removeFinishedJobs() {
 
     vector<JobEntry> temp;
     for(JobEntry& i : jobs){
-        if(fg && i.getJobId() == fg->getJobId())
+        if(fg && i.getJobId() == fg->getJobId()){
+            temp.push_back(i);
             continue;
+        }
 
         i.updateStatus();
         if(i.getStatus() != END || i.getStatus2() != END)

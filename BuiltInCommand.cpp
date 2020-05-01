@@ -72,8 +72,6 @@ KillCommand::KillCommand(string *args, int size) :
     }
 
     sig *= -1;
-    if(jobId == 0)
-        throw jobDoesntExist(splitLine[0].c_str(),jobId);
    /* if (sig < 0 || sig > MAX_SIG)
         throw invalidArgs(splitLine[0].c_str());*/
 }

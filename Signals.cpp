@@ -3,13 +3,12 @@
 using namespace std;
 
 void ctrlZHandler(int sig_num) {
-    sleep(5);
     cout << "smash: got ctrl-Z" << endl;
     pid_t fgPid = JobsList::getInstance().fgPid();
     if(fgPid == -1)
         return;
     string pidStr = std::to_string(fgPid);
-    JobsList::getInstance().sendSigById(SIGSTOP);
+    JobsList::getInstance().sendSigToFg(SIGSTOP);
     cout <<  "smash: process " << pidStr << " was stopped"<< endl;
 }
 
@@ -20,7 +19,7 @@ void ctrlCHandler(int sig_num) {
         return;
 
     string pidStr = std::to_string(JobsList::getInstance().fgPid());
-    JobsList::getInstance().sendSigById(SIGKILL);
+    JobsList::getInstance().sendSigToFg(SIGKILL);
     cout<< "smash: process " << pidStr << " was killed"<< endl;
 }
 
