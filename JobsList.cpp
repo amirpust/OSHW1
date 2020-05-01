@@ -57,6 +57,7 @@ void JobsList::sendSigById(int sig, int jobId) {
         if(!fg)
             return;
         job = fg;
+
     }
     else
         job = &getJobById(jobId);
