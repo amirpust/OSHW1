@@ -87,21 +87,25 @@ void JobsList::bringFG(int jobId) {
         fg = &getJobById(jobId);
 
     fg->continueCmd();
+    cout << fg->print() << " : " << fg->getPid();
 
     update();
 }
 
 void JobsList::resumeOnBG(int jobId) {
     update();
+    JobEntry* job;
     if(jobId == 0){
-        getLastStoppedJob().continueCmd();
+        job = &getLastStoppedJob();
+        job->continueCmd();
     }else{
-        JobEntry& job = getJobById(jobId);
-        if (job.getStatus() != STOP && job.getStatus2() != STOP)
+        job = &getJobById(jobId);
+        if (job->getStatus() != STOP && job->getStatus2() != STOP)
             throw inBG();
 
-        job.continueCmd();
+        job->continueCmd();
     }
+    cout << job->print() << " : " << job->getPid();
 }
 
 void JobsList::update(bool runInFg) {
