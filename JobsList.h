@@ -25,6 +25,7 @@ public:
     void resumeOnBG(int jobId = 0);
     void checkTimeOut();
     pid_t fgPid();
+    pid_t getPidById(int id);
 
 private:
 

@@ -202,3 +202,7 @@ void JobsList::checkTimeOut() {
         }
     }
 }
+
+pid_t JobsList::getPidById(int id) {
+    return getJobById(id).getPid();
+}
