@@ -65,7 +65,7 @@ class jobAlreadyBGRuning: public commandException{
     int jobId;
 public:
     string print() const override {
-        return " error: " + string(cmd) + ": " + std::to_string(jobId)
+        return " error: " + string(cmd) + ": job-id " + std::to_string(jobId)
                + " is already running in the background";
     }
 

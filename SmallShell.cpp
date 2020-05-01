@@ -26,10 +26,11 @@ void SmallShell::executeCommand(const char *cmd_line) {
     bool timeout = isTimeout(splitCmd);
     if(timeout){
         startTime = time(nullptr);
+        if(size < 3)
+            throw invalidArgs(splitCmd[0].c_str());
         try {
             size_t index = 0;
             unsigned int duration = stoul(splitCmd[1], &index); //seconds sent and makes turns it into int
-
             if(index < splitCmd[1].size())
                 throw invalidArgs(splitCmd[0].c_str());
         }catch(exception& e){
@@ -242,7 +243,7 @@ void SmallShell::removeBackgroundSign(string &cmd) {
     if(cmd[index] != '&')
         return;
 
-    cmd[index] = '\0';
+    cmd[index] = ' ';
 }
 
 redirectionType SmallShell::identifyRedirection(string* splitCmd, int size, string* path){

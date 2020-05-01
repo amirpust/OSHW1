@@ -1,7 +1,7 @@
 #include "BuiltInCommand.h"
 #include "SmallShell.h"
 
-#define MAX_SIG 31
+#define MAX_SIG 64
 ChpromptCommand::ChpromptCommand(string *args, int size) :
 BuiltInCommand(args,size){}
 
@@ -72,16 +72,17 @@ KillCommand::KillCommand(string *args, int size) :
     }
 
     sig *= -1;
-   /* if (sig < 0 || sig > MAX_SIG)
-        throw invalidArgs(splitLine[0].c_str());*/
+    if (sig < 0 || sig > MAX_SIG)
+        throw invalidArgs(splitLine[0].c_str());
 }
 
 void KillCommand::execute() {
 
     try {
-        cout << "signal number " << sig << " was sent to pid " <<
-             JobsList::getInstance().getPidById(jobId) << endl;
+        pid_t currentPid = JobsList::getInstance().getPidById(jobId);
         JobsList::getInstance().sendSigById(sig,jobId);
+        cout << "signal number " << sig << " was sent to pid " <<
+             currentPid << endl;
     }catch(JobsList::notExist& e){
         throw jobDoesntExist(splitLine[0].c_str(),jobId);
     }catch(JobsList::emptyList& e){
