@@ -80,7 +80,11 @@ void JobsList::sendSigById(int sig, int jobId) {
 }
 
 void JobsList::bringFG(int jobId) {
+    update(false);
     assert(fg == nullptr);
+
+    if(jobs.empty())
+        throw emptyList();
 
     if(jobId == 0)
         fg = &jobs.back();
@@ -96,6 +100,10 @@ void JobsList::bringFG(int jobId) {
 void JobsList::resumeOnBG(int jobId) {
     update();
     JobEntry* job;
+    if(jobs.empty())
+        throw emptyList();
+
+
     if(jobId == 0){
         job = &getLastStoppedJob();
         job->continueCmd();
