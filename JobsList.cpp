@@ -26,8 +26,12 @@ void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pi
 void JobsList::printJobsList() {
     update();
 
+    PRINT_PARAM(jobs.size());
+
     if (jobs.empty())
         return;
+
+
 
     for (const JobEntry& i : jobs){
         cout << "[" << i.getJobId() << "] " << i.print();
@@ -156,6 +160,12 @@ void JobsList::removeFinishedJobs() {
         }
 
         i.updateStatus();
+
+        PRINT_PARAM(i.print());
+        PRINT_PARAM(i.getStatus());
+        PRINT_PARAM(i.getPid());
+
+
         if(i.getStatus() != END || i.getStatus2() != END)
             temp.push_back(i);
     }

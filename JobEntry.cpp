@@ -24,7 +24,7 @@ void JobEntry::updateStatus(bool inFG) {
         if (p == WAIT_PID_ERR)
             throw waitpidError( __FUNCTION__, __LINE__);
         */
-        if( p != 0){
+        if( p > 0){
             if(WIFSTOPPED(newStatus)){
                 stopTime = time(nullptr);
                 status = STOP;
@@ -49,7 +49,7 @@ void JobEntry::updateStatus(bool inFG) {
         if (p == WAIT_PID_ERR)
             throw waitpidError(__FUNCTION__, __LINE__);
         */
-        if( p != 0){
+        if( p > 0){
             if(WIFSTOPPED(newStatus)){
                 stopTime = time(nullptr);
                 status2 = STOP;
