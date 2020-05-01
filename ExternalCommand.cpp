@@ -1,5 +1,7 @@
 #include "ExternalCommand.h"
+#include <limits.h>
 
+#define DEFAULT_BUFFER_SIZE 4096
 void ExternalCommand::execute() {
     char bash[10] = "/bin/bash";
     char flag[3] = "-c";
@@ -26,7 +28,6 @@ Command(args,size,external){}
 
 CopyCommand::CopyCommand(string *args, int size)
         : Command(args, size, copyCmd){
-    //TODO: check arguments
     oldFile = splitLine[1];
     newFile = splitLine[2];
 }
@@ -38,38 +39,56 @@ CopyCommand::CopyCommand(CopyCommand const &toCopy)
 }
 
 void CopyCommand::execute() {
-    prepare();
-    char buf[1];
+    char realPath1[PATH_MAX];
+    char realPath2[PATH_MAX];
+    realpath(oldFile.c_str(), realPath1);
+    realpath(newFile.c_str(), realPath2);
 
-    int readRet = read(readFD,buf,1);
+    if(strcmp(realPath1,realPath2) == 0){
+        readFD = open(oldFile.c_str(),O_RDONLY);
+        if(readFD == READ_ERR){
+            throw openError();
+        }
+        close(readFD);
+        cout << "smash: " + oldFile + " was copied to " + newFile << endl;
+        return;
+    }
+    prepare();
+
+    char buf[DEFAULT_BUFFER_SIZE];
+
+    int readRet = read(readFD,buf,DEFAULT_BUFFER_SIZE);
     if(readRet == READ_ERR)
         throw readError();
 
-    int writeRet = write(writeFD,buf,1);
+    int writeRet = write(writeFD,buf,readRet);
     if(writeRet == WRITE_ERR)
         throw writeError();
 
     while(readRet > 0 && writeRet > 0){
 
-        readRet = read(readFD,buf,1);
+        readRet = read(readFD,buf,DEFAULT_BUFFER_SIZE);
         if(readRet == READ_ERR)
             throw readError();
-        if(readRet > 0){
-            writeRet = write(writeFD,buf,1);
-            if(writeRet == WRITE_ERR)
-                throw writeError();
-        }
-    }
+        writeRet = write(writeFD,buf,readRet);
+        if(writeRet == WRITE_ERR)
+            throw writeError();
 
+    }
     cout << "smash: " + oldFile + " was copied to " + newFile << endl; // this should be printed but i forgot it
     cleanUp();
 }
 
 void CopyCommand::prepare() {
     readFD = open(oldFile.c_str(),O_RDONLY);
+    if(readFD == READ_ERR){
+        throw openError();
+    }
+    if(oldFile == newFile)
+        return;
     writeFD = open(newFile.c_str(),O_CREAT | O_RDWR | O_TRUNC, S_IRWXU);
-    if(readFD == READ_ERR || writeFD == WRITE_ERR){
-        throw openError(__FUNCTION__,__LINE__);
+    if(writeFD == WRITE_ERR){
+        throw openError();
     }
 }
 

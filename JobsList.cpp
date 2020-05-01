@@ -26,8 +26,6 @@ void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pi
 void JobsList::printJobsList() {
     update();
 
-    PRINT_PARAM(jobs.size());
-
     if (jobs.empty())
         return;
 
@@ -97,11 +95,11 @@ void JobsList::bringFG(int jobId) {
     update();
     assert(fg == nullptr);
 
-    if(jobs.empty())
-        throw emptyList();
-
-    if(jobId == 0)
+    if(jobId == 0){
+        if(jobs.empty())
+            throw emptyList();
         fg = &jobs.back();
+    }
     else
         fg = &getJobById(jobId);
 
@@ -114,11 +112,10 @@ void JobsList::bringFG(int jobId) {
 void JobsList::resumeOnBG(int jobId) {
     update();
     JobEntry* job;
-    if(jobs.empty())
-        throw emptyList();
-
 
     if(jobId == 0){
+        if(jobs.empty())
+            throw emptyList();
         job = &getLastStoppedJob();
         job->continueCmd();
     }else{
@@ -161,11 +158,6 @@ void JobsList::removeFinishedJobs() {
 
         i.updateStatus();
 
-        PRINT_PARAM(i.print());
-        PRINT_PARAM(i.getStatus());
-        PRINT_PARAM(i.getPid());
-
-
         if(i.getStatus() != END || i.getStatus2() != END)
             temp.push_back(i);
     }
@@ -190,8 +182,6 @@ void JobsList::killJob(JobEntry &job, bool toPrint) {
 
 JobEntry &JobsList::getJobById(int jobId) {
     update();
-    if(jobs.empty())
-        throw emptyList();
 
     if(jobId < 0)
         throw notExist();
@@ -233,11 +223,11 @@ pid_t JobsList::fgPid() {
 
 void JobsList::checkTimeOut() {
     time_t current = time(nullptr);
+    update();
     for(JobEntry& i : jobs) {
         if (i.getTime() > 0 && difftime(current, i.getTime()) >= 0) { // current-timeout
             cout << "smash: " << i.print() << "!" << endl;
             i.killCmd();
-            update();
             return;
         }
     }

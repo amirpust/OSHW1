@@ -9,7 +9,6 @@ SmallShell &SmallShell::getInstance() {
 }
 
 void SmallShell::executeCommand(const char *cmd_line) {
-
     bool bg;
     string original = cmdToString(cmd_line);
     string cmdStr;
@@ -51,7 +50,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
         if (pipeLeft > 0 && pipeRight > 0) { //father
             jobs.addJob(original, bg, pipeLeft, pipeRight, finishTime); //TODO
             return;
-        }else if(pipeLeft == 0){    //left son
+        }else if(pipeLeft == 0){             //left son
             size = index;
         } else {                            //right son
             size -= (index + 1);
@@ -90,7 +89,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
             copyCommand.execute();
             exit(-1);
         }else{
-            jobs.addJob(original, bg, childPid,-1,finishTime);
+            jobs.addJob(original,bg,childPid,-1,finishTime);
         }
     }else {
         ExternalCommand externalCommand(*dynamic_cast<ExternalCommand *>(cmd));
