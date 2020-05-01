@@ -164,6 +164,9 @@ JobEntry &JobsList::getJobById(int jobId) {
     if(jobs.empty())
         throw emptyList();
 
+    if(jobId < 0)
+        throw notExist();
+
     for (JobEntry& i : jobs)
         if(i.getJobId() == jobId)
             return i;
