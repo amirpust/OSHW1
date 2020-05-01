@@ -87,7 +87,7 @@ void JobsList::bringFG(int jobId) {
         fg = &getJobById(jobId);
 
     fg->continueCmd();
-    cout << fg->print() << " : " << fg->getPid();
+    cout << fg->print() << " : " << fg->getPid() << endl;
 
     update();
 }
@@ -105,7 +105,7 @@ void JobsList::resumeOnBG(int jobId) {
 
         job->continueCmd();
     }
-    cout << job->print() << " : " << job->getPid();
+    cout << job->print() << " : " << job->getPid() << endl;
 }
 
 void JobsList::update(bool runInFg) {
