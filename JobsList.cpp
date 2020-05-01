@@ -81,7 +81,10 @@ void JobsList::sendSigById(int sig, int jobId) {
 void JobsList::bringFG(int jobId) {
     assert(fg == nullptr);
 
-    fg = &getJobById(jobId);
+    if(jobId == 0)
+        fg = &jobs.back();
+    else
+        fg = &getJobById(jobId);
 
     fg->continueCmd();
 

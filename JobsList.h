@@ -21,7 +21,7 @@ public:
     void killAllJobs();
     int getSize();
     void sendSigById(int sig, int jobId = 0);
-    void bringFG(int jobId);
+    void bringFG(int jobId = 0);
     void resumeOnBG(int jobId = 0);
     void checkTimeOut();
     pid_t fgPid();
