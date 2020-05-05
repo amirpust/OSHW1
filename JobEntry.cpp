@@ -122,15 +122,11 @@ void JobEntry::killCmd() {
         assert(pid > 0);
         if(kill(pid, SIGKILL) == KILL_ERR)
             throw killError();
-        waitpid(pid, NULL, 0);
-        status = END;
     }
     if(status2 != END){
         assert(pid2 > 0);
         if(kill(pid2, SIGKILL) == KILL_ERR)
             throw killError();
-        waitpid(pid2, NULL, 0);
-        status2 = END;
     }
 }
 
