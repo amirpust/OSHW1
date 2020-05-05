@@ -362,7 +362,7 @@ SmallShell::~SmallShell() {
 }
 
 void SmallShell::removeRedirection(string &cmd) {
-    int index = static_cast<int>(cmd.find_first_of('>'));
+    int index = cmd.find_first_of('>');
     if(index == string::npos)
         return;
 
