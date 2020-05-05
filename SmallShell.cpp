@@ -30,7 +30,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
         try {
             size_t index = 0;
             unsigned int duration = stoul(splitCmd[1], &index); //seconds sent and makes turns it into int
-            if(index < splitCmd[1].size())
+            if(index < splitCmd[1].size() || duration < 0)
                 throw invalidArgs(splitCmd[0]);
         }catch(exception& e){
             throw invalidArgs(splitCmd[0]);
