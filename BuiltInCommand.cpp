@@ -36,10 +36,10 @@ BuiltInCommand(args,size){}
 
 void CdCommand::execute() {
     if(size > 2){
-        throw tooManyArgs(splitLine[0].c_str());
+        throw tooManyArgs(splitLine[0]);
     }if(splitLine[1] == "-"){
         if(SmallShell::getInstance().getPreviousDir().empty()){
-            throw emptyDirHistory(splitLine[0].c_str());
+            throw emptyDirHistory(splitLine[0]);
         }
     }
     SmallShell::getInstance().cd(splitLine[1]);
@@ -52,28 +52,28 @@ void JobsCommand::execute() {
     try{
         JobsList::getInstance().printJobsList();
     }catch (JobsList::emptyList& e){
-        throw emptyList(splitLine[0].c_str());
+        throw emptyList(splitLine[0]);
     }
 }
 
 KillCommand::KillCommand(string *args, int size) :
         BuiltInCommand(args,size){
     if(size != 3)
-        throw invalidArgs(splitLine[0].c_str());
+        throw invalidArgs(splitLine[0]);
     try {
         size_t indexSig;
         size_t indexJobId;
         sig =  stoi(splitLine[1], &indexSig);
         jobId = stoi(splitLine[2], &indexJobId);
         if(indexJobId < splitLine[2].size() || indexSig < splitLine[1].size())
-            throw invalidArgs(splitLine[0].c_str());
+            throw invalidArgs(splitLine[0]);
     }catch(exception& e){
-        throw invalidArgs(splitLine[0].c_str());
+        throw invalidArgs(splitLine[0]);
     }
 
     sig *= -1;
     if(sig < 0){
-        throw invalidArgs(splitLine[0].c_str());
+        throw invalidArgs(splitLine[0]);
     }
 
 }
@@ -85,9 +85,9 @@ void KillCommand::execute() {
         cout << "signal number " << sig << " was sent to pid " <<
              currentPid << endl;
     }catch(JobsList::notExist& e){
-        throw jobDoesntExist(splitLine[0].c_str(),jobId);
+        throw jobDoesntExist(splitLine[0],jobId);
     }catch(JobsList::emptyList& e){
-        throw jobDoesntExist(splitLine[0].c_str(),jobId);
+        throw jobDoesntExist(splitLine[0],jobId);
     }
 
 
@@ -96,7 +96,7 @@ void KillCommand::execute() {
 FgCommand::FgCommand(string *args, int size) :
         BuiltInCommand(args,size){
     if(size > 2){
-        throw invalidArgs(splitLine[0].c_str());
+        throw invalidArgs(splitLine[0]);
     }else if(size == 1){
         jobId = 0;
         return;
@@ -105,9 +105,9 @@ FgCommand::FgCommand(string *args, int size) :
             size_t index = 0;
             jobId = stoi(splitLine[1], &index);
             if(index < splitLine[1].size())
-                throw invalidArgs(splitLine[0].c_str());
+                throw invalidArgs(splitLine[0]);
         }catch(exception& e){
-            throw invalidArgs(splitLine[0].c_str());
+            throw invalidArgs(splitLine[0]);
         }
 
     }
@@ -118,16 +118,16 @@ void FgCommand::execute() {
     try {
         JobsList::getInstance().bringFG(jobId);
     }catch(JobsList::notExist& e){
-        throw jobDoesntExist(splitLine[0].c_str(), jobId);
+        throw jobDoesntExist(splitLine[0], jobId);
     }catch(JobsList::emptyList& e){
-        throw emptyList(splitLine[0].c_str());
+        throw emptyList(splitLine[0]);
     }
 }
 
 BgCommand::BgCommand(string *args, int size) :
         BuiltInCommand(args,size){
     if(size > 2)
-        throw invalidArgs(splitLine[0].c_str());
+        throw invalidArgs(splitLine[0]);
     if(size == 1)
         jobId = 0;
     else{
@@ -136,10 +136,10 @@ BgCommand::BgCommand(string *args, int size) :
             size_t index = 0;
             jobId = stoi(splitLine[1], &index);
             if(index < splitLine[1].size()) {
-                throw invalidArgs(splitLine[0].c_str());
+                throw invalidArgs(splitLine[0]);
             }
         }catch(exception& e){
-            throw invalidArgs(splitLine[0].c_str());
+            throw invalidArgs(splitLine[0]);
         }
     }
 }
@@ -148,11 +148,11 @@ void BgCommand::execute() {
     try {
         JobsList::getInstance().resumeOnBG(jobId);
     }catch (JobsList::notExist& e){
-        throw jobDoesntExist(splitLine[0].c_str(),jobId);
+        throw jobDoesntExist(splitLine[0],jobId);
     }catch (JobsList::inBG& e){
-        throw jobAlreadyBGRuning(splitLine[0].c_str(),jobId);
+        throw jobAlreadyBGRuning(splitLine[0],jobId);
     }catch(JobsList::emptyList& e){
-        throw emptyListBG(splitLine[0].c_str());
+        throw emptyListBG(splitLine[0]);
     }
 }
 

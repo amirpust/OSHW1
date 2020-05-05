@@ -20,10 +20,6 @@ void JobEntry::updateStatus(bool inFG) {
         else
             p = waitpid(pid, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
 
-        /*
-        if (p == WAIT_PID_ERR)
-            throw waitpidError( __FUNCTION__, __LINE__);
-        */
         if( p > 0){
             if(WIFSTOPPED(newStatus)){
                 stopTime = time(nullptr);
@@ -45,10 +41,6 @@ void JobEntry::updateStatus(bool inFG) {
         else
             p = waitpid(pid2, &newStatus, WNOHANG | WUNTRACED | WCONTINUED);
 
-        /*
-        if (p == WAIT_PID_ERR)
-            throw waitpidError(__FUNCTION__, __LINE__);
-        */
         if( p > 0){
             if(WIFSTOPPED(newStatus)){
                 stopTime = time(nullptr);
@@ -118,14 +110,15 @@ void JobEntry::continueCmd() {
 }
 
 void JobEntry::killCmd() {
-    if(status != END){
-        assert(pid > 0);
-        if(kill(pid, SIGKILL) == KILL_ERR)
-            throw killError();
-    }
+
     if(status2 != END){
         assert(pid2 > 0);
         if(kill(pid2, SIGKILL) == KILL_ERR)
+            throw killError();
+    }
+    if(status != END){
+        assert(pid > 0);
+        if(kill(pid, SIGKILL) == KILL_ERR)
             throw killError();
     }
 }

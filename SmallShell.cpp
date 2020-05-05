@@ -26,14 +26,14 @@ void SmallShell::executeCommand(const char *cmd_line) {
     if(timeout){
         startTime = time(nullptr);
         if(size < 3)
-            throw invalidArgs(splitCmd[0].c_str());
+            throw invalidArgs(splitCmd[0]);
         try {
             size_t index = 0;
             unsigned int duration = stoul(splitCmd[1], &index); //seconds sent and makes turns it into int
             if(index < splitCmd[1].size())
-                throw invalidArgs(splitCmd[0].c_str());
+                throw invalidArgs(splitCmd[0]);
         }catch(exception& e){
-            throw invalidArgs(splitCmd[0].c_str());
+            throw invalidArgs(splitCmd[0]);
         }
 
         unsigned int duration = stoul(splitCmd[1]);
@@ -269,10 +269,10 @@ void SmallShell::prepareIO(redirectionType type, const string& path, int* size) 
 
     if(type == override){
         if ( open(path.c_str(),O_CREAT | O_RDWR | O_TRUNC, S_IRWXU | S_IRGRP | S_IROTH) == OPEN_ERR)
-            throw openError(__FUNCTION__,__LINE__);
+            throw openError();
     }else{
         if ( open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH ) == OPEN_ERR)
-            throw openError(__FUNCTION__,__LINE__);
+            throw openError();
     }
     *size -= 2;
 }

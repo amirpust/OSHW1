@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <cstring>
 
-
 using namespace std;
 
 class SysCallException : public exception{
