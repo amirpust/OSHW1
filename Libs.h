@@ -16,7 +16,6 @@
 #include <errno.h>
 
 
-#include "Debugger.h"
 #include "SysCallException.h"
 
 using namespace std;
