@@ -72,6 +72,9 @@ KillCommand::KillCommand(string *args, int size) :
     }
 
     sig *= -1;
+    if(sig < 0){
+        throw invalidArgs(splitLine[0].c_str());
+    }
 
 }
 
