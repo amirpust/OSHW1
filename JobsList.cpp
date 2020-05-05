@@ -11,6 +11,7 @@ void JobsList::addJob(const string& originalCmd,  bool onBg, pid_t pid, pid_t pi
     int newId = ++maxId;
     jobs.emplace_back(originalCmd, newId, pid, pid2, endTime);
 
+
     if(!onBg){
         try{
             fg = &jobs.back();
@@ -222,13 +223,14 @@ pid_t JobsList::fgPid() {
 }
 
 void JobsList::checkTimeOut() {
+
     time_t current = time(nullptr);
     update();
     for(JobEntry& i : jobs) {
-        if (i.getTime() > 0 && difftime(current, i.getTime()) >= 0) { // current-timeout
+
+        if (i.getTimeOut() > 1 && difftime(current, i.getTimeOut()) >= 0) { // current-timeout
             cout << "smash: " << i.print() << "!" << endl;
             i.killCmd();
-            return;
         }
     }
 }
