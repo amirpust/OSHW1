@@ -53,7 +53,7 @@ private:
     void removeBackgroundSign(string& cmd);
     void removeRedirection(string& cmd);
     redirectionType identifyRedirection(string* splitCmd, int size, string* path);
-    void prepareIO(redirectionType type, const string& path);
+    void prepareIO(redirectionType type, const string& path, int* size);
     int checkPipe(string split[], int size, pid_t *leftPid, pid_t *rightPid);
     void splitPipe(pipeType type, pid_t *leftPid, pid_t *rightPid);
     string cmdToString(const char* cmdLine);

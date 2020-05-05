@@ -33,12 +33,12 @@ void SmallShell::executeCommand(const char *cmd_line) {
             if(index < splitCmd[1].size())
                 throw invalidArgs(splitCmd[0].c_str());
         }catch(exception& e){
-            throw invalidArgs(splitCmd[0].c_str()); //TODO : i dont know if its right to put it here
+            throw invalidArgs(splitCmd[0].c_str());
         }
 
         unsigned int duration = stoul(splitCmd[1]);
         finishTime = startTime + duration;
-        alarm(duration); //TODO if duration is 0
+        alarm(duration);
         size -= TIMEOUT_ARGS;
         for (int i = 0; i < size; ++i) {
             splitCmd[i] = splitCmd[i + TIMEOUT_ARGS];
@@ -61,7 +61,7 @@ void SmallShell::executeCommand(const char *cmd_line) {
 
     redirectionType io = identifyRedirection(splitCmd, size, &path);
     removeRedirection(cmdStr);
-    prepareIO(io, path);
+    prepareIO(io, path,&size);
 
     Command *cmd = createCommand(splitCmd, size);
 
@@ -260,7 +260,7 @@ redirectionType SmallShell::identifyRedirection(string* splitCmd, int size, stri
     return noRedirect;
 }
 
-void SmallShell::prepareIO(redirectionType type, const string& path) {
+void SmallShell::prepareIO(redirectionType type, const string& path, int* size) {
     if(type == noRedirect)
         return;
 
@@ -274,6 +274,7 @@ void SmallShell::prepareIO(redirectionType type, const string& path) {
         if ( open(path.c_str(), O_APPEND | O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH ) == OPEN_ERR)
             throw openError(__FUNCTION__,__LINE__);
     }
+    *size -= 2;
 }
 
 void SmallShell::cleanUpIO() {

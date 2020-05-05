@@ -1,7 +1,7 @@
 #include "BuiltInCommand.h"
 #include "SmallShell.h"
 
-#define MAX_SIG 64
+
 ChpromptCommand::ChpromptCommand(string *args, int size) :
 BuiltInCommand(args,size){}
 
@@ -72,12 +72,10 @@ KillCommand::KillCommand(string *args, int size) :
     }
 
     sig *= -1;
-    if (sig < 0 || sig > MAX_SIG)
-        throw invalidArgs(splitLine[0].c_str());
+
 }
 
 void KillCommand::execute() {
-
     try {
         pid_t currentPid = JobsList::getInstance().getPidById(jobId);
         JobsList::getInstance().sendSigById(sig,jobId);
@@ -125,6 +123,8 @@ void FgCommand::execute() {
 
 BgCommand::BgCommand(string *args, int size) :
         BuiltInCommand(args,size){
+    if(size > 2)
+        throw invalidArgs(splitLine[0].c_str());
     if(size == 1)
         jobId = 0;
     else{
